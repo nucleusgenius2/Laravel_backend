@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use App\Services\UserService;
 use App\Traits\StructuredResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,6 @@ class LoginController extends FormRequest
     use StructuredResponse;
     public function login(LoginRequest $request): JsonResponse
     {
-
         $data = $request->validated();
 
         $user = User::where('email', $data['email'])->first();
@@ -28,6 +28,7 @@ class LoginController extends FormRequest
                 $dataUser = [
                     'token' => $token,
                     'user' => $user->name,
+                    'level' => UserService::getUserLevel($user->id)
                 ];
 
                 $this->status = 'success';
