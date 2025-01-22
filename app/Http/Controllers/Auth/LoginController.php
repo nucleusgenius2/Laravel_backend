@@ -12,37 +12,48 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 
-class LoginController extends FormRequest
+class LoginController
 {
     use StructuredResponse;
+
+    public UserService $service;
+
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
+
     public function login(LoginRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $user = User::where('email', $data['email'])->first();
+        $user = User::select('users.*', 'user_params.level', 'user_params.currency', 'user_params.referal')
+            ->join('user_params', 'users.id', '=', 'user_params.id')
+            ->where('users.email', $data['email'])
+            ->first();
 
         if ($user) {
             if (Hash::check($data['password'], $user->password)) {
                 $token = $user->createToken('token', ['permission:user'])->plainTextToken;
 
-                $dataUser = [
+                $userData = [
                     'token' => $token,
                     'user' => $user->name,
-                    'level' => UserService::getUserLevel($user->id)
+                    'level' => $this->service->getUserLevel($user->id),
+                    'currency' => $user->currency,
+                    'balance' => 0
                 ];
 
                 $this->status = 'success';
                 $this->code = 200;
-                $this->dataJson = $dataUser;
+                $this->dataJson = $userData ;
                 $this->message = 'Вход успешен';
-
             } else {
                 $this->message = 'Пароль не совпадает';
             }
         } else {
             $this->message = 'Email не найден';
         }
-
 
         return $this->responseJsonApi();
     }

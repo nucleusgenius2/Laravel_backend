@@ -7,6 +7,7 @@ use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
 use App\Models\UserParam;
 use App\Services\GenerateUniqueString;
+use App\Services\UserService;
 use App\Traits\StructuredResponse;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
@@ -20,53 +21,28 @@ class RegistrationController
 {
     use StructuredResponse;
 
+    public UserService $service;
+
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
+
     public function registration(RegistrationRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        DB::beginTransaction();
+        $userData = $this->service->createUser($data);
 
-        try {
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'password' => $data['password'],
-                'created_at' => Carbon::now(),
-            ]);
-
-            $dataParam = [
-                'id' => $user->id,
-                'currency' => $data['currency'],
-                'level' => 1,
-                'password' => $data['password'],
-                'referal' => GenerateUniqueString::generate($user->id, 10),
-            ];
-
-            if (isset($data['refCodey'])) {
-                $userReferal = UserParam::select('id')->where('referal', $data['refCodey'])->first();
-
-                if ($userReferal) {
-                    $dataParam['refer_id'] = $userReferal->id;
-                }
-            }
-
-            UserParam::create($dataParam);
-
-            $token = $user->createToken('token', ['permission:user'])->plainTextToken;
-
-            DB::commit();
-
+        if ( $userData['status'] ){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $token;
+            $this->dataJson = $userData['token'];
             $this->message = 'Регистрация прошла успешно';
         }
-        catch (\Exception $e) {
-            DB::rollBack();
-
+        else {
             $this->code = 500;
-            $this->message = 'Ошибка при регистрации: ' . $e->getMessage();
+            $this->message = 'Ошибка при регистрации: ' .  $userData['error'];
         }
 
         return $this->responseJsonApi();

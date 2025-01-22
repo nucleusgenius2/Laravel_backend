@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Exceptions\ValidationExceptionResponse;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class AuthProviderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'currency' => 'required|string|min:1|max:5',
+            'refCodey' => 'string|min:1',
         ];
     }
 
