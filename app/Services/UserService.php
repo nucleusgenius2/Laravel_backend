@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserParam;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class UserService
@@ -75,7 +76,7 @@ class UserService
         }
     }
 
-    public function authSocial($socialDataUser): array
+    public function authSocial($socialDataUser, string $type): array
     {
         $user = User::select('users.*', 'user_params.level', 'user_params.currency', 'user_params.referal')
             ->join('user_params', 'users.id', '=', 'user_params.id')
@@ -102,8 +103,8 @@ class UserService
             $data = [
                 'name' => $socialDataUser->getName(),
                 'email' => $socialDataUser->getEmail(),
-                'currency' => session('user_auth.currency'),
-                'provider_type' => 'Google',
+                'currency' => session('user_auth.currency') ?? 'USD',
+                'provider_type' => $type,
                 'provider_id' => $socialDataUser->getId(),
             ];
 
