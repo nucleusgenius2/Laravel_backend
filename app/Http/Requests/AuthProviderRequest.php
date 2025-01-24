@@ -24,7 +24,7 @@ class AuthProviderRequest extends FormRequest
     {
         return [
             'currency' => 'required|string|min:1|max:5',
-            'refCodey' => 'string|min:1',
+            'refCode' => 'string|min:1',
         ];
     }
 

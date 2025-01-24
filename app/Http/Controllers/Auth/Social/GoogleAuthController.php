@@ -25,8 +25,8 @@ class GoogleAuthController
             'user_auth.currency' => $data['currency']
         ];
 
-        if (isset($data['refCodey'])){
-            $sessionData['user_auth.ref'] = $data['refCodey'];
+        if (isset($data['refCode'])){
+            $sessionData['user_auth.ref'] = $data['refCode'];
         }
 
         session($sessionData);

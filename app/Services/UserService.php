@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Account;
+use App\Models\Balance;
+use App\Models\ConfigWinmove;
+use App\Models\FiatCoin;
 use App\Models\User;
 use App\Models\UserParam;
 use Carbon\Carbon;
@@ -11,10 +15,10 @@ use Illuminate\Support\Str;
 
 class UserService
 {
+
     public function createUser(array $data): array
     {
         DB::beginTransaction();
-
         try {
             $userData = [
                 'name' => GenerateUniqueString::generateName(10),
@@ -33,27 +37,81 @@ class UserService
             if (isset($data['provider_id'])){
                 $userData['provider_id'] = $data['provider_id'];
             }
-
+            //создали юзера
             $user = User::create($userData);
+
+            $fiat = FiatCoin::select('id')->where('code', $data['currency'])->first();
+
+            if(!$fiat){
+                throw new \Exception('Не валидный код валюты: ' . $data['currency']);
+            }
 
             $dataParam = [
                 'id' => $user->id,
-                'currency' => $data['currency'],
+                'currency' => $fiat->id,
                 'level' => 1,
                 'referal' => GenerateUniqueString::generate($user->id, 10),
             ];
 
-            if (isset($data['refCodey'])) {
-                $userReferal = UserParam::select('id')->where('referal', $data['refCodey'])->first();
+            if (isset($data['refCode'])) {
+                $userReferal = UserParam::select('id')->where('referal', $data['refCode'])->first();
 
                 if ($userReferal) {
                     $dataParam['refer_id'] = $userReferal->id;
                 }
             }
 
+
+            //создали параметры юзера
             $userParam = UserParam::create($dataParam);
 
             $token = $user->createToken('token', ['permission:user'])->plainTextToken;
+
+            //создание счетов юзера
+            $accountMain = Account::create([
+                'user_id' => $user->id,
+                'type' => 'main',
+                'fiat_coin' => $fiat->id
+            ]);
+
+
+            $accountBonus = Account::create([
+                'user_id' => $user->id,
+                'type' => 'bonus',
+                'fiat_coin' => $fiat->id
+            ]);
+
+            $accountMintwin = Account::create([
+                'user_id' => $user->id,
+                'type' => 'mintwin',
+                'fiat_coin' => $fiat->id
+            ]);
+
+            $bonusConfig = ConfigWinmove::where('param', 'reg_bonus')->first();
+
+            $balance = [
+                ['amount' => 0, 'account_id' => $accountMain->id,'count' => 0 ],
+                ['amount' => 0, 'account_id' => $accountBonus->id, 'count' => 0 ],
+                ['amount' => 0, 'account_id' => $accountMintwin->id,'count' => 0],
+            ];
+
+            if ($bonusConfig->is_active) {
+
+                $accountFsbonus = Account::create([
+                    'user_id' => $user->id,
+                    'type' => 'fsbonus',
+                    'fiat_coin' => $fiat->id
+                ]);
+
+                $balance[] = [
+                    'amount' => 0,
+                    'account_id' => $accountFsbonus->id,
+                    'count' => $bonusConfig->val,
+                ];
+
+            }
+
+            Balance::insert($balance);
 
             DB::commit();
 
@@ -111,7 +169,7 @@ class UserService
             session()->forget('user_auth.currency');
 
             if (session()->has('user_auth.ref')) {
-                $data['refCodey'] = session('user_auth.ref');
+                $data['refCode'] = session('user_auth.ref');
                 session()->forget('user_auth.ref');
             }
 
@@ -132,7 +190,7 @@ class UserService
                 ];
             } else {
                 return [
-                    'status' => true,
+                    'status' => false,
                     'data' => $userData['error'],
                 ];
             }

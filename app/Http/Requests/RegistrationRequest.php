@@ -23,11 +23,11 @@ class RegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required|string|max:16|regex:/(^[0-9-_]+$)+/',
+            'phone' => 'required|string|max:16|regex:/^\+?[1-9][0-9]{7,14}$/',
             'email' => 'required|email|unique:users|max:30',
             'password' => 'required|string|confirmed|min:6|max:30',
             'currency' => 'required|string|min:1|max:5',
-            'refCodey' => 'string|min:1',
+            'refCode' => 'string|min:1',
         ];
     }
 
