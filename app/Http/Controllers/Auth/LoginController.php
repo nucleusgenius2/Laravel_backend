@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use App\Services\UserService;
-use App\Traits\StructuredResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 
-class LoginController
+
+class LoginController extends Controller
 {
-    use StructuredResponse;
-
     public UserService $service;
 
     public function __construct(UserService $service)
@@ -50,8 +47,10 @@ class LoginController
                 $this->message = 'Вход успешен';
             } else {
                 $this->message = 'Пароль не совпадает';
+                $this->code = 401;
             }
         } else {
+            $this->code = 404;
             $this->message = 'Email не найден';
         }
 

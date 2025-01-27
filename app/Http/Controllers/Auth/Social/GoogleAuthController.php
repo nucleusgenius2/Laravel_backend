@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth\Social;
 use App\Http\Requests\AuthProviderRequest;
 use App\Services\UserService;
 use App\Traits\StructuredResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController
@@ -34,11 +36,17 @@ class GoogleAuthController
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleCallback()
+    public function handleCallback(Request $request)
     {
-        $user = Socialite::driver('google')->user();
+        //$user = Socialite::driver('google')->user();
+        $user = Socialite::driver('google')->userFromToken($request->code);
 
-        $data = $this->service->authSocial($user, 'Google');
+        $optionalDate =[
+            $request->header('currency'),
+            $request->header('refCode') ?? false,
+        ];
+
+        $data = $this->service->authSocial($user, 'Google', $optionalDate);
 
         if ($data['status']) {
             $this->status = 'success';

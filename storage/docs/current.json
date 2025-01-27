@@ -1,0 +1,167 @@
+{
+    "getCurrent": {
+        "summary": "Получить все валюты",
+        "description": "Получение списка доступных валют",
+        "operationId": "getCurrencies",
+        "tags": [
+            "Statistics"
+        ],
+        "responses": {
+            "200": {
+                "description": "A list of all currencies.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "img": {
+                                                "type": "string",
+                                                "example": "",
+                                                "description": "URL или путь к изображению валюты."
+                                            },
+                                            "code": {
+                                                "type": "string",
+                                                "example": "RUB",
+                                                "description": "Код валюты."
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Russian Ruble",
+                                                "description": "Название валюты."
+                                            },
+                                            "country": {
+                                                "type": "string",
+                                                "example": "RUSSIAN FEDERATION",
+                                                "description": "Страна, связанная с валютой."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    },
+    "showCurrent" : {
+        "get": {
+            "summary": "Получить данные о валюте",
+            "description": "Получение конкретной валюты",
+            "operationId": "getCurrencyByCode",
+            "tags": [
+                "Statistics"
+            ],
+            "parameters": [
+                {
+                    "name": "code",
+                    "in": "path",
+                    "required": true,
+                    "description": "Currency code (e.g., RUB, USD)",
+                    "schema": {
+                        "type": "string",
+                        "example": "RUB"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Currency found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": null
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "success"
+                                    },
+                                    "json": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "img": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "code": {
+                                                "type": "string",
+                                                "example": "RUB"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Russian Ruble"
+                                            },
+                                            "country": {
+                                                "type": "string",
+                                                "example": "RUSSIAN FEDERATION"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Invalid currency code",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Не валидные данные"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Currency not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Валюта не найдена"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

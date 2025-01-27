@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\State;
 
-use App\Services\UserService;
-use App\Traits\StructuredResponse;
+use App\Http\Controllers\Controller;
 
-class GameStateController
+
+class GameStateController extends Controller
 {
-    use StructuredResponse;
-
     public function index()
     {
         $this->status = 'success';

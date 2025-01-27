@@ -134,7 +134,7 @@ class UserService
         }
     }
 
-    public function authSocial($socialDataUser, string $type): array
+    public function authSocial($socialDataUser, string $type, array $optionalDate): array
     {
         $user = User::select('users.*', 'user_params.level', 'user_params.currency', 'user_params.referal')
             ->join('user_params', 'users.id', '=', 'user_params.id')
@@ -161,16 +161,23 @@ class UserService
             $data = [
                 'name' => $socialDataUser->getName(),
                 'email' => $socialDataUser->getEmail(),
-                'currency' => session('user_auth.currency') ?? 'USD',
+               // 'currency' => session('user_auth.currency') ?? 'USD',
+                'currency' => $optionalDate['currency'] ?? 'USD',
+
+
                 'provider_type' => $type,
                 'provider_id' => $socialDataUser->getId(),
             ];
 
-            session()->forget('user_auth.currency');
+            //session()->forget('user_auth.currency');
 
-            if (session()->has('user_auth.ref')) {
-                $data['refCode'] = session('user_auth.ref');
-                session()->forget('user_auth.ref');
+           // if (session()->has('user_auth.ref')) {
+            //    $data['refCode'] = session('user_auth.ref');
+            //    session()->forget('user_auth.ref');
+            //}
+
+            if( $optionalDate['refCode'] ){
+                $data['refCode'] = $optionalDate['refCode'];
             }
 
             $userData = $this->createUser($data);
@@ -206,7 +213,7 @@ class UserService
         if (count($result) > 0) {
             $userLevel = $result[0]->user_level;
             $maxAmount = $result[0]->maxAmount;
-            $fullAmount = $result[0]->fullAmount;
+            $fullAmount = $result[0]->fullAmount ?? 0;
 
             return [
                 'user_level' => $userLevel,

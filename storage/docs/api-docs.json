@@ -1,0 +1,52 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "User Registration API",
+        "description": "API for user registration and login.",
+        "version": "1.0.0"
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/api/v1/user/registration": {
+            "$ref": "./auth.json#/userRegistration"
+        },
+        "/api/v1/user/auth": {
+            "$ref": "./auth.json#/userLogin"
+        },
+        "/api/v1/user/balance": {
+            "get": {
+                "$ref": "./balance.json#/getBalance",
+                "tags": ["User"]
+            },
+            "post": {
+                "$ref": "./balance.json#/postBalance",
+                "tags": ["User"]
+            }
+        },
+        "/api/v1/user/default_balance": {
+            "post": {
+                "$ref": "./balance.json#/defaultBalance",
+                "tags": ["User"]
+            }
+        },
+
+        "/api/v1/stat/currencies": {
+            "get": {
+                "$ref": "./current.json#/getCurrent",
+                "tags": ["Statistics"]
+            }
+        },
+        "/api/v1/stat/currencies/{code}": {
+            "$ref": "./current.json#/showCurrent"
+        }
+
+    }
+}

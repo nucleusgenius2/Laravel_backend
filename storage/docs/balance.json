@@ -1,0 +1,194 @@
+{
+    "getBalance": {
+        "summary": "Получить баланс пользователя",
+        "description": "Возвращает баланс для авторизованного пользователя.",
+        "tags": ["User"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Список балансов",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": [
+                                {
+                                    "id": 1,
+                                    "amount": "0.00",
+                                    "account_id": 1
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Не авторизован",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated.",
+                            "status": "error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "postBalance": {
+        "summary": "Создать баланс пользователя",
+        "description": "Создаёт новый счёт (баланс) для пользователя.",
+        "tags": ["User"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "currency": {
+                                "type": "string",
+                                "example": "USD"
+                            }
+                        },
+                        "required": ["currency"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Баланс успешно создан",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Пользователь не авторизован.",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации (невалидный код валюты)",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Не валидный код валюты: incorrect_currency",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Ошибка сервера (например, ошибка базы данных)",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Произошла ошибка на сервере.",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "defaultBalance" : {
+        "summary": "Установить баланс по умолчанию",
+        "description": "Этот маршрут устанавливает баланс пользователя по умолчанию. Требует авторизации через Sanctum.",
+        "tags": ["User"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "currency": {
+                                "type": "string",
+                                "description": "Код валюты, для которой устанавливается баланс по умолчанию.",
+                                "example": "USD"
+                            }
+                        },
+                        "required": ["currency"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Баланс успешно установлен по умолчанию.",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "null",
+                            "status": "success",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Пользователь не авторизован.",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации (невалидный код валюты)",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Не валидный код валюты: incorrect_currency",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Ошибка сервера при установке баланса.",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Не удалось установить баланс по умолчанию.",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
