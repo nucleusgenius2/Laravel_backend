@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MessageSent;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\Social\GoogleAuthController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Auth\Social\VkAuthController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\State\FiatCoinController;
 use App\Http\Controllers\State\GameStateController;
+use App\Http\Controllers\Websocket\WebsocketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,7 +36,11 @@ Route::prefix('v1')->group(function () {
             Route::get('balance', [BalanceController::class, 'index']);
             Route::post('balance', [BalanceController::class, 'store']);
             Route::post('default_balance', [BalanceController::class, 'setDefault']);
+
+            Route::get('websocket_auth', [WebsocketController::class, 'generateAuthJWT']);
         });
+
+        Route::get('websocket', [WebsocketController::class, 'getPublicToken']);
 
         Route::post('auth', [LoginController::class, 'login']);
         Route::post('registration', [RegistrationController::class, 'registration']);

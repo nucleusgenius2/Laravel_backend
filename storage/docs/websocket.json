@@ -1,0 +1,91 @@
+{
+    "getPublicToken": {
+        "summary": "Получить публичный JWT токен",
+        "description": "Возвращает публичный токен для работы с WebSocket",
+        "operationId": "getPublicToken",
+        "tags": ["Websocket"],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ с токеном",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "string",
+                                    "description": "JWT токен",
+                                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCIkpXVCJ9.eyJpZCI6IjM4YmQwMzMiLCJuYW1lIjoiT215b3ZWUVlVhdCI6MTczODEzNzE1MywiZXhwIjoxNzMTUxNTUzfQ._LvJ4mkKz-Jb-dJQLYSUnU2qAjTOdyud52ccFwd_Fqo"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Внутренняя ошибка сервера"
+            }
+        }
+    },
+    "getAuthToken": {
+        "summary": "Получить JWT токен авторизованного юзера",
+        "description": "Возвращает токен авторизованного юзера для работы с WebSocket",
+        "operationId": "getPublicToken",
+        "tags": ["Websocket"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ с токеном",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "string",
+                                    "description": "JWT токен",
+                                    "example": "eyJhbGciOiJIUzI1NiI6IkpXVCJ9.eyJpZCI6IjM2QwMzMiLSIsImlhdCI6MTczODEzNzE1MywiZXhwIjoxNzM4MTUxNTUzfQ._LvJ4mkKz-Jb-dJQLYSUnU2qAjTOdyud52ccFwd_Fqo"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Пользователь не авторизован.",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Внутренняя ошибка сервера"
+            }
+        }
+    }
+}

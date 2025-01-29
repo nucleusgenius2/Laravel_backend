@@ -46,6 +46,20 @@
         },
         "/api/v1/stat/currencies/{code}": {
             "$ref": "./current.json#/showCurrent"
+        },
+
+        "/api/v1/user/websocket": {
+            "get": {
+                "$ref": "./websocket.json#/getPublicToken",
+                "tags": ["Websocket"]
+            }
+        },
+
+        "/api/v1/user/websocket_auth": {
+            "get": {
+                "$ref": "./websocket.json#/getAuthToken",
+                "tags": ["Websocket"]
+            }
         }
 
     }
