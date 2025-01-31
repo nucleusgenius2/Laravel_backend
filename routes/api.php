@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\Social\VkAuthController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\State\AdvertController;
 use App\Http\Controllers\State\FiatCoinController;
 use App\Http\Controllers\State\GameStateController;
 use App\Http\Controllers\State\PlayGameController;
@@ -54,6 +55,9 @@ Route::prefix('v1')->group(function () {
 
         Route::get('set_country', [CountryController::class, 'setCountry']);
         Route::get('winner_table', [PlayGameController::class, 'indexTable']);
+        Route::get('winner_slider', [PlayGameController::class, 'indexSlider']);
+
+        Route::get('advert', [AdvertController::class, 'index']);
     });
 
     Route::prefix('websocket')->group(function () {
@@ -69,8 +73,6 @@ Route::prefix('v1')->group(function () {
             Route::post('notification', [NotificationController::class, 'store']);
         });
     });
-
-
 
 });
 

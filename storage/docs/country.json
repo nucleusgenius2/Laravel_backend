@@ -1,0 +1,35 @@
+{
+    "setCountry": {
+        "summary": "Установить страну пользователя",
+        "description": "Сохраняет информацию о стране пользователя",
+        "tags": [
+            "Country"
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "null",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "null",
+                                    "example": null
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

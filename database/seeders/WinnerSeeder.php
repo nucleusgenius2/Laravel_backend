@@ -36,8 +36,9 @@ class WinnerSeeder extends Seeder
 
                 $game = Game::create([
                     'gameId' => 1,
-                    'type' => 'card',
+                    'type' => 'minigame',
                     'img' => '',
+                    'title' => 'Рога и копыта',
                 ]);
 
                 PlayGame::create([
@@ -62,6 +63,7 @@ class WinnerSeeder extends Seeder
                     'gameId' => 2,
                     'type' => 'slots',
                     'img' => '',
+                    'title' => 'Крути слоты',
                 ]);
 
                 PlayGame::create([

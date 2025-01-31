@@ -39,7 +39,7 @@
     "getAuthToken": {
         "summary": "Получить JWT токен авторизованного юзера",
         "description": "Возвращает токен авторизованного юзера для работы с WebSocket",
-        "operationId": "getPublicToken",
+        "operationId": "getPrivateToken",
         "tags": ["Websocket"],
         "security": [
             {
@@ -85,6 +85,207 @@
             },
             "500": {
                 "description": "Внутренняя ошибка сервера"
+            }
+        }
+    },
+    "createChatMessage":  {
+        "summary": "Создание сообщения в чате и отправка WebSocket",
+        "description": "Создает новое сообщение в чате и вызывает событие WebSocket, которое рассылает это сообщения всем юзерам в чате",
+        "tags": ["Websocket"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "required": ["content"],
+                        "properties": {
+                            "content": {
+                                "type": "string",
+                                "description": "Текст сообщения",
+                                "example": "Привет, мир!"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "null",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "string",
+                                            "example": "Привет мир"
+                                        },
+                                        "user": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-01-30T19:02:06.409768Z"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 370
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Поле контент обязательно для заполнения"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "json": {
+                                    "type": "null",
+                                    "example": null
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "getChatMessage": {
+        "summary": "Получить список сообщений из чата",
+        "description": "Возвращает список сообщений в порядке убывания по `id`",
+        "tags": ["Websocket"],
+        "parameters": [
+            {
+                "name": "count",
+                "in": "query",
+                "description": "Количество сообщений для получения",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "null",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 370
+                                            },
+                                            "user": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "TahxURLjCf"
+                                                    },
+                                                    "avatar": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    },
+                                                    "level": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                }
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "Привет мир"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-01-30 19:02:06"
+                                            },
+                                            "moderator": {
+                                                "type": "boolean",
+                                                "example": false
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Поле count обязательно для заполнения"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "json": {
+                                    "type": "null",
+                                    "example": null
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

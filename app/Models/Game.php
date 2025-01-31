@@ -12,5 +12,6 @@ class Game extends Model
         'gameid',
         'type',
         'img',
+        'title',
     ];
 }

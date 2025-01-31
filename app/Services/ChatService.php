@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class ChatService
 {
-    public function getDataChat(int $count) : Collection
+    public function getDataChat(int $count): Collection
     {
         $messages = Chats::join('users', 'users.id', '=', 'chats.user')
             ->leftJoin('user_params', 'user_params.id', '=', 'users.id')

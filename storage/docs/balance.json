@@ -1,8 +1,8 @@
 {
     "getBalance": {
-        "summary": "Получить баланс пользователя",
-        "description": "Возвращает баланс для авторизованного пользователя.",
-        "tags": ["User"],
+        "summary": "Возвращает всех счетов текущего юзера",
+        "description": "Возвращает всех счетов (балансов) текущего юзера, включая бонусы. В зависимости от типа счета данные могут отличаться.",
+        "tags": ["Balance"],
         "security": [
             {
                 "sanctum": []
@@ -18,9 +18,27 @@
                             "status": "success",
                             "json": [
                                 {
-                                    "id": 1,
+                                    "type": "main",
                                     "amount": "0.00",
-                                    "account_id": 1
+                                    "default": false,
+                                    "currency": {
+                                        "name": "Russian Ruble",
+                                        "img": "",
+                                        "code": "RUB"
+                                    }
+                                },
+                                {
+                                    "type": "bonus",
+                                    "amount": "1.00",
+                                    "count": "1.00",
+                                    "default": true,
+                                    "to_date" : "дата",
+                                    "nominal" : "пока что не известно как будет выглядеть",
+                                    "currency": {
+                                        "name": "Russian Ruble",
+                                        "img": "",
+                                        "code": "RUB"
+                                    }
                                 }
                             ]
                         }
@@ -41,9 +59,9 @@
         }
     },
     "postBalance": {
-        "summary": "Создать баланс пользователя",
+        "summary": "Создать счет для юзера",
         "description": "Создаёт новый счёт (баланс) для пользователя.",
-        "tags": ["User"],
+        "tags": ["Balance"],
         "security": [
             {
                 "sanctum": []
@@ -118,7 +136,7 @@
     "defaultBalance" : {
         "summary": "Установить текущую валюту юзера",
         "description": "Устанавливает какая валюта будет считаться выбранной по умолчанию (она же главная валюта).",
-        "tags": ["User"],
+        "tags": ["Balance"],
         "security": [
             {
                 "sanctum": []

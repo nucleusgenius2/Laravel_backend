@@ -24,17 +24,17 @@
         "/api/v1/user/balance": {
             "get": {
                 "$ref": "./balance.json#/getBalance",
-                "tags": ["User"]
+                "tags": ["Balance"]
             },
             "post": {
                 "$ref": "./balance.json#/postBalance",
-                "tags": ["User"]
+                "tags": ["Balance"]
             }
         },
         "/api/v1/user/default_balance": {
             "post": {
                 "$ref": "./balance.json#/defaultBalance",
-                "tags": ["User"]
+                "tags": ["Balance"]
             }
         },
 
@@ -48,17 +48,56 @@
             "$ref": "./current.json#/showCurrent"
         },
 
-        "/api/v1/user/websocket": {
+        "/api/v1/websocket/jwt": {
             "get": {
                 "$ref": "./websocket.json#/getPublicToken",
                 "tags": ["Websocket"]
             }
         },
 
-        "/api/v1/user/websocket_auth": {
+        "/api/v1/websocket/auth_jwt": {
             "get": {
                 "$ref": "./websocket.json#/getAuthToken",
                 "tags": ["Websocket"]
+            }
+        },
+
+        "/api/v1/websocket/chat": {
+            "get": {
+                "$ref": "./websocket.json#/getChatMessage",
+                "tags": ["Websocket"]
+            },
+            "post": {
+                "$ref": "./websocket.json#/createChatMessage",
+                "tags": ["Websocket"]
+            }
+        },
+
+        "/api/v1/stat/set_country": {
+            "get": {
+                "$ref": "./country.json#/setCountry",
+                "tags": ["Country"]
+            }
+        },
+
+        "/api/v1/stat/winner_table": {
+            "get": {
+                "$ref": "./games.json#/getWinnerTable",
+                "tags": ["Statistics"]
+            }
+        },
+
+        "/api/v1/stat/winner_slider": {
+            "get": {
+                "$ref": "./games.json#/getWinnerSlider",
+                "tags": ["Statistics"]
+            }
+        },
+
+        "/api/v1/stat/advert": {
+            "get": {
+                "$ref": "./advert.json#/getAdvert",
+                "tags": ["Statistics"]
             }
         }
 

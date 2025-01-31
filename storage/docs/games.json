@@ -1,0 +1,226 @@
+{
+    "getWinnerTable":{
+        "summary": "Получить таблицу победителей",
+        "description": "Возвращает список победителей в порядке убывания по `id` игры.",
+        "tags": [
+            "Statistics"
+        ],
+        "parameters": [
+            {
+                "name": "count",
+                "in": "query",
+                "description": "Количество записей для получения (число больше 1)",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "example": 10
+                }
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "null",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date_play": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-01-31 11:16:39"
+                                            },
+                                            "win": {
+                                                "type": "string",
+                                                "example": "2"
+                                            },
+                                            "game": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Крути слоты"
+                                                    },
+                                                    "img": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                }
+                                            },
+                                            "user": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "yixNHKfDCd"
+                                                    },
+                                                    "avatar": {
+                                                        "type": "string",
+                                                        "nullable": true,
+                                                        "example": null
+                                                    },
+                                                    "level": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Поле count обязательно для заполнения и должно быть больше 1"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "json": {
+                                    "type": "null",
+                                    "example": null
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "getWinnerSlider": {
+        "summary": "Получить список победителей",
+        "description": "Возвращает список победителей игр",
+        "tags": ["Statistics"],
+        "parameters": [
+            {
+                "name": "count",
+                "in": "query",
+                "required": true,
+                "description": "Количество победителей (должно быть больше 1)",
+                "schema": {
+                    "type": "integer",
+                    "minimum": 2
+                }
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "date_play": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-01-31 11:16:39"
+                                            },
+                                            "win": {
+                                                "type": "string",
+                                                "example": "2"
+                                            },
+                                            "game": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Крути слоты"
+                                                    },
+                                                    "img": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                }
+                                            },
+                                            "user": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "yixNHKfDCd"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Ошибка валидации"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "count": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "Значение count должно быть больше 1."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

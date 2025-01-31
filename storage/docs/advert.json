@@ -1,0 +1,103 @@
+{
+    "getAdvert": {
+        "summary": "Получить список рекламных объявлений",
+        "description": "Возвращает список активных рекламных объявлений.",
+        "tags": [
+            "Statistics"
+        ],
+        "parameters": [
+            {
+                "name": "count",
+                "in": "query",
+                "description": "Количество записей для получения (число больше 0)",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 10
+                }
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "null",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "status": {
+                                                "type": "boolean",
+                                                "example": true
+                                            },
+                                            "img": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "link_one": {
+                                                "type": "string",
+                                                "example": "https://demo.winmove.io/"
+                                            },
+                                            "link_two": {
+                                                "type": "string",
+                                                "nullable": true,
+                                                "example": null
+                                            },
+                                            "to_date": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-02-03 14:17:44"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Поле count обязательно для заполнения и должно быть больше 0"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "json": {
+                                    "type": "null",
+                                    "example": null
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
