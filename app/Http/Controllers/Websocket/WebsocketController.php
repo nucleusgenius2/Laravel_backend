@@ -4,19 +4,20 @@ namespace App\Http\Controllers\Websocket;
 
 use App\Http\Controllers\Controller;
 use App\Services\JwtTokenService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 
 class WebsocketController extends Controller
 {
-    public JwtTokenService $service;
+    protected JwtTokenService $service;
 
     public function __construct(JwtTokenService $service)
     {
         $this->service = $service;
     }
 
-    public function getPublicToken()
+    public function getPublicTokenJWT(): JsonResponse
     {
         $this->status = 'success';
         $this->code = 200;
@@ -25,7 +26,7 @@ class WebsocketController extends Controller
         return $this->responseJsonApi();
     }
 
-    public function generateAuthJWT(Request $request)
+    public function getAuthTokenJWT(Request $request): JsonResponse
     {
         $this->status = 'success';
         $this->code = 200;

@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(FiatCoinSeeder::class);
         $this->call(ConfigWinmoveSeeder::class);
-
+        $this->call(WinnerSeeder::class);
     }
 }

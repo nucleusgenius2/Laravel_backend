@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 
 class RegistrationController extends Controller
 {
-    public UserService $service;
+    protected UserService $service;
 
     public function __construct(UserService $service)
     {

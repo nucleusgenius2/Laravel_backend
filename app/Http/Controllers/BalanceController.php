@@ -5,17 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BalanceRequest;
 use App\Models\Account;
 use App\Services\BalanceService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 
 class BalanceController extends Controller
 {
-    public function index()
+    protected BalanceService $service;
+
+    public function __construct(BalanceService $service){
+        $this->service = $service;
+    }
+
+
+    public function index(): JsonResponse
     {
-        $balance = Account::select('balances.*')
-            ->where('accounts.user_id', Auth::user()->id)
-            ->rightJoin('balances', 'accounts.id', '=', 'balances.account_id')
-            ->get();
+        $balance = $this->service->getBalance();
 
         $this->status = 'success';
         $this->code = 200;
@@ -24,11 +29,11 @@ class BalanceController extends Controller
         return $this->responseJsonApi();
     }
 
-    public function store(BalanceRequest $request, BalanceService $service)
+    public function store(BalanceRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $balance = $service->addBalance($data);
+        $balance = $this->service->addBalance($data);
 
         if($balance['status']){
             $this->status = 'success';
@@ -42,7 +47,7 @@ class BalanceController extends Controller
         return $this->responseJsonApi();
     }
 
-    public function setDefault(BalanceRequest $request, BalanceService $service)
+    public function setDefault(BalanceRequest $request, BalanceService $service): JsonResponse
     {
         $data = $request->validated();
 

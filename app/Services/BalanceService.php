@@ -6,12 +6,60 @@ use App\Models\Account;
 use App\Models\Balance;
 use App\Models\FiatCoin;
 use App\Models\UserParam;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BalanceService
 {
+    public function getBalance(): Collection
+    {
+        $balance = Account::select(
+            'accounts.type',
+            'balances.amount',
+            'balances.to_date',
+            'balances.count',
+            'balances.count',
+            'balances.nominal',
+            'fiat_coin.name as currency_name',
+            'fiat_coin.img as currency_img',
+            'fiat_coin.code as currency_code',
+            'fiat_coin.id as currency_id',
+        )
+            ->where('accounts.user_id', Auth::user()->id)
+            ->rightJoin('balances', 'accounts.id', '=', 'balances.account_id')
+            ->join('fiat_coin', 'accounts.fiat_coin', '=', 'fiat_coin.id')
+            ->get();
+
+        $mainCurrencyId = UserParam::select('currency')->where('id', Auth::user()->id)->first();
+
+
+        $balance = $balance->map(function ($item) use ($mainCurrencyId) {
+
+            $item->default = $item->currency_id == $mainCurrencyId->currency;
+
+            $item->currency = [
+                'name' => $item->currency_name,
+                'img'  => $item->currency_img,
+                'code' => $item->currency_code,
+            ];
+
+            if(!isset($item->to_date)){ unset($item->to_date); }
+            if(!isset($item->nominal)){ unset($item->nominal); }
+            if($item->count ==='0.00'){ unset($item->count); }
+
+            // Убираем ненужные поля
+            unset($item->currency_name, $item->currency_img, $item->currency_code, $item->currency_id);
+
+            return $item;
+        });
+
+        return $balance;
+
+    }
+
+
     public function addBalance(array $data): array
     {
         $user = Auth::user();

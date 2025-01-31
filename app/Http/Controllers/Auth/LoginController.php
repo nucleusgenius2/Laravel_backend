@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public UserService $service;
+    protected UserService $service;
 
     public function __construct(UserService $service)
     {

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\ChatMessageSent;
+use App\Listeners\WebsocketChatMessageSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,5 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('steam',  \SocialiteProviders\Steam\Provider::class);
         });
+
+
     }
 }
