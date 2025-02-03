@@ -9,7 +9,7 @@ class Game extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'gameid',
+        'gameId',
         'type',
         'img',
         'title',

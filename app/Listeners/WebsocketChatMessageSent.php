@@ -4,21 +4,32 @@ namespace App\Listeners;
 
 use App\Events\ChatMessageSent;
 use App\Events\NotificationsWebsocketSend;
+use App\Events\WinnersWebsocketSend;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class WebsocketChatMessageSent
 {
-    public function handle(NotificationsWebsocketSend|ChatMessageSent $event): void
+    public function handle(NotificationsWebsocketSend|WinnersWebsocketSend|ChatMessageSent $event): void
     {
         $url = config("websocket.websocket_node_local_uri");
-
+log::info('отправка сокета');
         $data = [
             'type' => $event->getType(),
             'data' => $event->getData(),
-            'user_name' => $event->getUserName(),
-            'user_id' => $event->getUserId()
+            'user_id' => $event->getUserId(),
+            'user' => [
+                'name' => $event->getUserName(),
+            ],
         ];
+
+        if (method_exists($event, 'getUserDetails') ) {
+            $userDetails = $event->getUserDetails();
+            $data['user']['avatar'] = $userDetails->avatar;
+            $data['user']['level'] = $userDetails->level;
+        }
+
+
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',

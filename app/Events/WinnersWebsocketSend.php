@@ -8,7 +8,7 @@ use App\DTO\WebsocketDto;
 use App\Models\UserParam;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class ChatMessageSent implements EventWebsocket
+class WinnersWebsocketSend implements EventWebsocket
 {
     use Dispatchable;
 
@@ -21,7 +21,7 @@ class ChatMessageSent implements EventWebsocket
 
     public function getType():string
     {
-        return 'publicMessage';
+        return 'winnersGameMessage';
     }
 
     public function getUserId():int
@@ -38,11 +38,5 @@ class ChatMessageSent implements EventWebsocket
     {
         return $this->dto->data;
     }
-
-    public function getUserDetails(): UserParam
-    {
-        return UserParam::where('id', $this->dto->userId)->first();
-    }
-
 
 }

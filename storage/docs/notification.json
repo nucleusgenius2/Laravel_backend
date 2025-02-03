@@ -1,0 +1,332 @@
+{
+    "getNotificationTable": {
+        "summary": "Получение уведомлений",
+        "description": "Возвращает список уведомлений пользователя. Требуется аутентификация.",
+        "tags": [
+            "Websocket"
+        ],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "page",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "description": "Номер страницы (должен быть больше 0)"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Список уведомлений",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "object",
+                                    "properties": {
+                                        "current_page": { "type": "integer", "example": 1 },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": { "type": "integer", "example": 27 },
+                                                    "user_id": { "type": "integer", "example": 5 },
+                                                    "content": { "type": "string", "example": "уведомление" },
+                                                    "read": { "type": "boolean", "example": false },
+                                                    "created_at": { "type": "string", "example": null }
+                                                }
+                                            }
+                                        },
+                                        "first_page_url": { "type": "string", "example": "http://localhost/api/v1/websocket/notification?page=1" },
+                                        "from": { "type": "integer", "example": 1 },
+                                        "last_page": { "type": "integer", "example": 1 },
+                                        "last_page_url": { "type": "string", "example": "http://localhost/api/v1/websocket/notification?page=1" },
+                                        "links": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "url": { "type": "string", "nullable": true, "example": null },
+                                                    "label": { "type": "string", "example": "&laquo; Previous" },
+                                                    "active": { "type": "boolean", "example": false }
+                                                }
+                                            }
+                                        },
+                                        "next_page_url": { "type": "string", "nullable": true, "example": null },
+                                        "path": { "type": "string", "example": "http://localhost/api/v1/websocket/notification" },
+                                        "per_page": { "type": "integer", "example": 20 },
+                                        "prev_page_url": { "type": "string", "nullable": true, "example": null },
+                                        "to": { "type": "integer", "example": 1 },
+                                        "total": { "type": "integer", "example": 1 }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка авторизации. Требуется аутентификация.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthenticated."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации запроса (например, если page меньше 2 или отсутствует)",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "object",
+                                            "properties": {
+                                                "page": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The page field is required."
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "json": {
+                                            "type": "array",
+                                            "example": []
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "showNotification" : {
+        "summary": "Получение конкретного уведомления",
+        "description": "Возвращает одно уведомление по его ID. Требуется аутентификация.",
+        "tags": [
+            "Websocket"
+        ],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                },
+                "description": "ID уведомления"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ с уведомлением",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": null },
+                                "status": { "type": "string", "example": "success" },
+                                "json": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": { "type": "integer", "example": 20 },
+                                        "user_id": { "type": "integer", "example": 1 },
+                                        "content": { "type": "string", "example": "текст уведомления" },
+                                        "read": { "type": "boolean", "example": false },
+                                        "created_at": { "type": "string", "example": null }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка авторизации. Требуется аутентификация.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": "Unauthenticated." }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "createNotification":  {
+        "summary": "Создание уведомления",
+        "description": "Создает новое уведомление. Требуется аутентификация.",
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "tags": [
+            "Websocket"
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "user_id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "content": {
+                                "type": "string",
+                                "minLength": 3,
+                                "example": "уведомление"
+                            }
+                        },
+                        "required": ["user_id", "content"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Успешное создание уведомления",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "content": {
+                                            "type": "string",
+                                            "example": "уведомление"
+                                        },
+                                        "read": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 24
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка авторизации. Требуется аутентификация.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthenticated."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации запроса",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "message": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The content field is required."
+                                            }
+                                        },
+                                        "user_id": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The user_id field is required."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

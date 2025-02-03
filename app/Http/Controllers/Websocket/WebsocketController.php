@@ -26,11 +26,11 @@ class WebsocketController extends Controller
         return $this->responseJsonApi();
     }
 
-    public function getAuthTokenJWT(Request $request): JsonResponse
+    public function getAuthTokenJWT(): JsonResponse
     {
         $this->status = 'success';
         $this->code = 200;
-        $this->dataJson = $this->service->generateAuthJWT($request->user()->id, 4);
+        $this->dataJson = $this->service->generateAuthJWT(4);
 
         return $this->responseJsonApi();
     }

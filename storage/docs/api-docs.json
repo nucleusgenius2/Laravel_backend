@@ -73,6 +73,31 @@
             }
         },
 
+        "/api/v1/websocket/notification": {
+            "get": {
+                "$ref": "./notification.json#/getNotificationTable",
+                "tags": ["Websocket"]
+            },
+
+            "post": {
+                "$ref": "./notification.json#/createNotification",
+                "tags": ["Websocket"]
+            }
+        },
+
+        "/api/v1/websocket/notification/{id}": {
+            "get": {
+                "$ref": "./notification.json#/showNotification",
+                "tags": ["Websocket"]
+            }
+        },
+
+
+        "get": {
+            "$ref": "./notification.json#/showNotification",
+            "tags": ["Websocket"]
+        },
+
         "/api/v1/stat/set_country": {
             "get": {
                 "$ref": "./country.json#/setCountry",

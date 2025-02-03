@@ -56,6 +56,9 @@ Route::prefix('v1')->group(function () {
         Route::get('set_country', [CountryController::class, 'setCountry']);
         Route::get('winner_table', [PlayGameController::class, 'indexTable']);
         Route::get('winner_slider', [PlayGameController::class, 'indexSlider']);
+        Route::get('winner/{id}', [PlayGameController::class, 'show']);
+
+        Route::get('winner_test', [PlayGameController::class, 'createTest']);
 
         Route::get('advert', [AdvertController::class, 'index']);
     });
@@ -69,7 +72,7 @@ Route::prefix('v1')->group(function () {
             Route::get('auth_jwt', [WebsocketController::class, 'getAuthTokenJWT']);
 
             Route::get('notification', [NotificationController::class, 'index']);
-            Route::get('notification/id', [NotificationController::class, 'show']);
+            Route::get('notification/{id}', [NotificationController::class, 'show']);
             Route::post('notification', [NotificationController::class, 'store']);
         });
     });

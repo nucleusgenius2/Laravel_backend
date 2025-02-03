@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class JwtTokenService
@@ -21,12 +22,15 @@ class JwtTokenService
         return $this->generateToken($payload, $hours);
     }
 
-    public function generateAuthJWT(User $user, int $hours): string
+    public function generateAuthJWT(int $hours): string
     {
+        $user = Auth::user();
 
         $payload = [
             'id' => $user->id,
             'name' => $user->name,
+            'iat' => now()->timestamp,
+            'exp' => now()->addHours($hours)->timestamp,
         ];
 
         return $this->generateToken($payload, $hours);
@@ -104,7 +108,5 @@ class JwtTokenService
     {
         return base64_decode(strtr($data, '-_', '+/'));
     }
-
-
 
 }

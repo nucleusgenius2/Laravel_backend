@@ -27,10 +27,9 @@ class Notification extends Model
         parent::boot();
 
         static::created(function ($notification) {
-           $WebsocketDto = new WebsocketDto($notification->user_id,  '',  $notification->content);
+            $WebsocketDto = new WebsocketDto($notification->user_id,  'empty',  $notification->content);
 
-
-            event(new NotificationsWebsocketSend( $WebsocketDto));
+            event(new NotificationsWebsocketSend($WebsocketDto));
         });
     }
 

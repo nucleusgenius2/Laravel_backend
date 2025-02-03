@@ -12,19 +12,29 @@ return new class extends Migration
      */
     public function up()
     {
-       DB::statement("
-            CREATE PROCEDURE getUserLevel (IN user_id INT)
+        DB::unprepared('
+            CREATE OR REPLACE FUNCTION public."getUserLevel"(
+              user_id integer)
+                RETURNS TABLE(user_level integer, maxAmount numeric, fullAmount numeric)
+                LANGUAGE plpgsql
+                COST 100
+                VOLATILE PARALLEL UNSAFE
+                ROWS 1000
+            AS $BODY$
             BEGIN
-                DECLARE user_level INT;
-                DECLARE maxAmount DECIMAL(10,2);
-                DECLARE fullAmount DECIMAL(10,2);
-
-                SELECT level INTO user_level FROM user_params WHERE id = user_id;
-                SELECT max_amount INTO maxAmount FROM level WHERE id = user_level;
-                SELECT SUM(amount) INTO fullAmount FROM incom_payments WHERE status = 1 AND user = user_id;
-                SELECT user_level, maxAmount, fullAmount;
-            END
-        ");
+              RETURN QUERY
+              SELECT
+                u.level,
+                l.max_amount,
+                COALESCE(SUM(i.amount), 0)
+              FROM user_params AS u
+              LEFT JOIN level AS l ON l.id = u.level
+              LEFT JOIN incom_payments AS i ON i.status::integer = 1 AND i.user = user_id
+              WHERE u.id = user_id
+              GROUP BY u.level, l.max_amount;
+            END;
+            $BODY$
+        ');
     }
 
     /**

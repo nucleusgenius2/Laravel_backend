@@ -7,6 +7,7 @@ use App\Http\Requests\PageRequest;
 use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
