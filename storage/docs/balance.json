@@ -1,7 +1,7 @@
 {
     "getBalance": {
-        "summary": "Возвращает всех счетов текущего юзера",
-        "description": "Возвращает всех счетов (балансов) текущего юзера, включая бонусы. В зависимости от типа счета данные могут отличаться.",
+        "summary": "Возвращает все счета текущего пользователя",
+        "description": "Возвращает все счета (балансы) текущего пользователя, включая бонусы. В зависимости от типа счета данные могут отличаться.",
         "tags": ["Balance"],
         "security": [
             {
@@ -32,8 +32,8 @@
                                     "amount": "1.00",
                                     "count": "1.00",
                                     "default": true,
-                                    "to_date" : "дата",
-                                    "nominal" : "пока что не известно как будет выглядеть",
+                                    "to_date": "2025-12-31",
+                                    "nominal": "пока что не известно как будет выглядеть",
                                     "currency": {
                                         "name": "Russian Ruble",
                                         "img": "",
@@ -59,8 +59,8 @@
         }
     },
     "postBalance": {
-        "summary": "Создать счет для юзера",
-        "description": "Создаёт новый счёт (баланс) для пользователя.",
+        "summary": "Создать счет для пользователя",
+        "description": "Создает новый счет (баланс) для пользователя.",
         "tags": ["Balance"],
         "security": [
             {
@@ -133,9 +133,9 @@
             }
         }
     },
-    "defaultBalance" : {
-        "summary": "Установить текущую валюту юзера",
-        "description": "Устанавливает какая валюта будет считаться выбранной по умолчанию (она же главная валюта).",
+    "defaultBalance": {
+        "summary": "Установить текущую валюту пользователя",
+        "description": "Устанавливает, какая валюта будет считаться выбранной по умолчанию (она же главная валюта).",
         "tags": ["Balance"],
         "security": [
             {
@@ -162,11 +162,11 @@
         },
         "responses": {
             "200": {
-                "description": "Валюта успешно установлен по умолчанию.",
+                "description": "Валюта успешно установлена по умолчанию.",
                 "content": {
                     "application/json": {
                         "example": {
-                            "message": "null",
+                            "message": null,
                             "status": "success",
                             "json": null
                         }
@@ -208,5 +208,90 @@
                 }
             }
         }
+    },
+    "getUserCurrencies" : {
+        "summary": "Получить доступные валюты для авторизованного пользователя",
+        "description": "Возвращает список доступных валют для пользователя, исключая те, которые уже используются пользователем, и учитывая валютные ограничения для страны пользователя.",
+        "tags": ["Balance"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ с доступными валютами",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "example": {
+                                        "1": "EUR"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизован, пользователь не прошел аутентификацию",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Неавторизован"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Внутренняя ошибка сервера",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
 }

@@ -70,7 +70,7 @@ class PlayGameController extends Controller
                 'phone' => '788899922',
                 'email' => 'testgame@mail.ru',
                 'password' => '123456',
-                'currency' => 'rub',
+                'currency' => 'RUB',
             ];
 
             $userData = $service->createUser($data);

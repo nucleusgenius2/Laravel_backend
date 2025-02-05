@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\State;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
+use App\Models\Countries;
 use App\Models\FiatCoin;
+use App\Models\UserParam;
+use App\Services\UserFiatService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 
 class FiatCoinController extends Controller
@@ -37,4 +43,22 @@ class FiatCoinController extends Controller
 
         return $this->responseJsonApi();
     }
+
+    public function getFiatUser(UserFiatService $service): JsonResponse
+    {
+        $user = Auth::user();
+
+        $data = $service->getUserCurrencies(user: $user);
+        if($data !== null){
+            $this->status = 'success';
+            $this->code = 200;
+            $this->dataJson = $data;
+        } else{
+            $this->code = 500;
+        }
+
+        return $this->responseJsonApi();
+    }
+
+
 }

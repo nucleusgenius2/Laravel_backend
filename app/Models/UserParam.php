@@ -15,6 +15,7 @@ class UserParam extends Model
         'gameCount',
         'referal',
         'currency',
-        'refer_id'
+        'refer_id',
+        'country'
     ];
 }

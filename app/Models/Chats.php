@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use App\DTO\WebsocketDto;
+use App\Events\ChatMessageSent;
+use App\Events\NotificationsWebsocketSend;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Chats extends Model
 {
@@ -18,4 +22,17 @@ class Chats extends Model
         'content',
         'created_at',
     ];
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($chatMessage) {
+
+            $WebsocketDto = new WebsocketDto($chatMessage->user, Auth::user()->name,  $chatMessage->content);
+
+            event(new ChatMessageSent($WebsocketDto));
+        });
+    }
 }

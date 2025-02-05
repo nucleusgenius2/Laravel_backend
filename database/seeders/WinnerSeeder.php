@@ -24,12 +24,15 @@ class WinnerSeeder extends Seeder
     {
         if(!PlayGame::exists()) {
             DB::beginTransaction();
+
+            $fiat = FiatCoin::first();
+
             try {
                 $data = [
                     'phone' => '788899922',
                     'email' => 'testgame@mail.ru',
                     'password' => '123456',
-                    'currency' => 'rub',
+                    'currency' => $fiat->code,
                 ];
 
                 $userData = $this->service->createUser($data);
@@ -41,6 +44,8 @@ class WinnerSeeder extends Seeder
                     'title' => 'Рога и копыта',
                 ]);
 
+
+                log::info($userData['fullUserData']['user']);
                 PlayGame::create([
                     'gameId' => $game->gameId,
                     'date_play' => Carbon::now(),
@@ -54,7 +59,7 @@ class WinnerSeeder extends Seeder
                     'phone' => '7822299988',
                     'email' => 'testgame2@mail.ru',
                     'password' => '123456',
-                    'currency' => 'usd'
+                    'currency' => $fiat->code
                 ];
 
                 $userData = $this->service->createUser($data);

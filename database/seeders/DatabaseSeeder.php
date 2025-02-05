@@ -17,5 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ConfigWinmoveSeeder::class);
         $this->call(WinnerSeeder::class);
         $this->call(AdvertSeeder::class);
+        $this->call( CountriesSeeder::class);
+
     }
 }

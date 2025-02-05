@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class UserService
 {
 
-    public function createUser(array $data): array
+    public function createUser(array $data, string $country): array
     {
         DB::beginTransaction();
         try {
@@ -51,6 +51,7 @@ class UserService
                 'currency' => $fiat->id,
                 'level' => 1,
                 'referal' => GenerateUniqueString::generate($user->id, 10),
+                'country' => $country
             ];
 
             if (isset($data['refCode'])) {
@@ -111,13 +112,17 @@ class UserService
 
             }
 
+
             Balance::insert($balance);
 
             DB::commit();
 
+            $userData = $this->returnAuthData(user: $user, token: $token, userParam: $userParam);
+
             return [
                 'status' => true,
                 'token' => $token ,
+                'returnData' => $userData,
                 'fullUserData' => [
                     'user' => $user,
                     'userParam' => $userParam
@@ -208,11 +213,12 @@ class UserService
     public function getUserLevel(int $userId): array|null
     {
         // Выполнение хранимой процедуры
-        $result = DB::select('CALL getUserLevel(?)', [$userId]);
+        //$result = DB::select('CALL getUserLevel(?)', [$userId]);
+        $result = DB::select('select * from public."getUserLevel"(?)', [$userId]);
 
         if (count($result) > 0) {
             $userLevel = $result[0]->user_level;
-            $maxAmount = $result[0]->maxAmount;
+            $maxAmount = $result[0]->maxamount;
             $fullAmount = $result[0]->fullAmount ?? 0;
 
             return [
@@ -223,5 +229,31 @@ class UserService
         }
 
         return null;
+    }
+
+    public function returnAuthData(User $user, string $token, ?UserParam $userParam = null): array
+    {
+        if($userParam){
+            return  [
+                'token' => $token,
+                'user_name' => $user->name,
+                'level' => $this->getUserLevel($user->id),
+                'currency' => $userParam->currency,
+                'balance' => 0,
+                'country' => $userParam->country,
+                'avatar' => $userParam->avatar
+            ];
+        }
+        else{
+            return  [
+                'token' => $token,
+                'user_name' => $user->name,
+                'level' => $this->getUserLevel($user->id),
+                'currency' => $user->currency,
+                'balance' => 0,
+                'country' => $user->country,
+                'avatar' => $user->avatar
+            ];
+        }
     }
 }

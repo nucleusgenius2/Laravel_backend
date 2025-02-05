@@ -35,12 +35,15 @@ Route::prefix('v1')->group(function () {
             Route::get('auth/google/callback', [GoogleAuthController::class, 'handleCallback']);
             Route::get('auth/steam', [SteamAuthController::class, 'redirect']);
             Route::get('auth/steam/callback', [SteamAuthController::class, 'handleCallback']);
+
         });
 
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('balance', [BalanceController::class, 'index']);
             Route::post('balance', [BalanceController::class, 'store']);
             Route::post('default_balance', [BalanceController::class, 'setDefault']);
+
+            Route::get('currencies_user', [FiatCoinController::class, 'getFiatUser']);
         });
 
         Route::post('auth', [LoginController::class, 'login']);
@@ -53,6 +56,7 @@ Route::prefix('v1')->group(function () {
         Route::get('currencies/{code}', [FiatCoinController::class, 'show']);
         Route::get('game', [GameStateController::class, 'index']);
 
+        Route::get('country', [CountryController::class, 'index']);
         Route::get('set_country', [CountryController::class, 'setCountry']);
         Route::get('winner_table', [PlayGameController::class, 'indexTable']);
         Route::get('winner_slider', [PlayGameController::class, 'indexSlider']);

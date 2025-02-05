@@ -10,18 +10,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('user_params', function (Blueprint $table) {
-            $table->dropColumn('currency');
-
-            $table->integer('currency');
+			$table->string('country', 2);
         });
     }
 
     public function down()
     {
         Schema::table('user_params', function (Blueprint $table) {
-            $table->dropColumn('currency');
-
-            $table->string('currency');
+            $table->dropColumn('country');
         });
     }
 };

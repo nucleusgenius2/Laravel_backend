@@ -38,6 +38,15 @@
             }
         },
 
+        "/api/v1/user/currencies_user": {
+            "get": {
+                "$ref": "./balance.json#/getUserCurrencies",
+                "tags": ["Balance"]
+            }
+        },
+
+
+
         "/api/v1/stat/currencies": {
             "get": {
                 "$ref": "./current.json#/getCurrent",
@@ -104,6 +113,13 @@
                 "tags": ["Country"]
             }
         },
+        "/api/v1/stat/country": {
+            "get": {
+                "$ref": "./country.json#/getCountry",
+                "tags": ["Country"]
+            }
+        },
+
 
         "/api/v1/stat/winner_table": {
             "get": {

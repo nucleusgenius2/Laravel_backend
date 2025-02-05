@@ -31,5 +31,67 @@
                 }
             }
         }
+    },
+    "getCountry" : {
+        "summary": "Получить список стран",
+        "description": "Возвращает список стран с их кодами и названиями.",
+        "tags": [
+            "Country"
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ со списком стран",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "code": {
+                                                "type": "string",
+                                                "example": "RU"
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Russian Federation"
+                                            },
+                                            "phone_prefix": {
+                                                "type": "integer",
+                                                "example": 7
+                                            }
+                                        }
+                                    },
+                                    "example": [
+                                        {
+                                            "code": "RU",
+                                            "title": "Russian Federation",
+                                            "phone_prefix": 7
+                                        },
+                                        {
+                                            "code": "US",
+                                            "title": "United States of America",
+                                            "phone_prefix": 1
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

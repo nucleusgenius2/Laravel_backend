@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
+use Stevebauman\Location\Facades\Location;
 
 
 class RegistrationController extends Controller
@@ -21,12 +22,15 @@ class RegistrationController extends Controller
     {
         $data = $request->validated();
 
-        $userData = $this->service->createUser($data);
+        $ip = request()->header('X-Forwarded-For') ?? request()->header('CF-Connecting-IP') ?? request()->ip();
+        $location = Location::get($ip);
+
+        $userData = $this->service->createUser(data: $data, country: $location->countryCode ?? 'RU');
 
         if ( $userData['status'] ){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $userData['token'];
+            $this->dataJson = $userData['returnData'];
             $this->message = 'Регистрация прошла успешно';
         }
         else {

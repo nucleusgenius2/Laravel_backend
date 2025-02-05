@@ -48,8 +48,8 @@ class ChatController extends Controller
            'created_at' => Carbon::now(),
         ]);
 
-        $userDto = new WebsocketDto($request->user()->id, $request->user()->name, $data['content']);
-        event(new ChatMessageSent($userDto));
+        //$userDto = new WebsocketDto($request->user()->id, $request->user()->name, $data['content']);
+       // event(new ChatMessageSent($userDto));
 
         $this->status = 'success';
         $this->code = 200;

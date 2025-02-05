@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
-
-
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -24,7 +24,7 @@ class LoginController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::select('users.*', 'user_params.level', 'user_params.currency', 'user_params.referal')
+        $user = User::select('users.*', 'user_params.*')
             ->join('user_params', 'users.id', '=', 'user_params.id')
             ->where('users.email', $data['email'])
             ->first();
@@ -33,25 +33,23 @@ class LoginController extends Controller
             if (Hash::check($data['password'], $user->password)) {
                 $token = $user->createToken('token', ['permission:user'])->plainTextToken;
 
-                $userData = [
-                    'token' => $token,
-                    'user' => $user->name,
-                    'level' => $this->service->getUserLevel($user->id),
-                    'currency' => $user->currency,
-                    'balance' => 0
-                ];
+                $userData = $this->service->returnAuthData(user: $user, token: $token);
 
                 $this->status = 'success';
                 $this->code = 200;
                 $this->dataJson = $userData ;
                 $this->message = 'Вход успешен';
             } else {
-                $this->message = 'Пароль не совпадает';
-                $this->code = 401;
+                $this->message = [
+                    'password' => ['Пароль не совпадает'],
+                ];
+                $this->code = 400;
             }
         } else {
-            $this->code = 404;
-            $this->message = 'Email не найден';
+            $this->code = 400;
+            $this->message = [
+                'email' => ['Email не найден'],
+            ];
         }
 
         return $this->responseJsonApi();
