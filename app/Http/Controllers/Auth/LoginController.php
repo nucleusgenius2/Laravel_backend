@@ -24,8 +24,9 @@ class LoginController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::select('users.*', 'user_params.*')
+        $user = User::select('users.*', 'user_params.*','fiat_coin.code as main_currency',)
             ->join('user_params', 'users.id', '=', 'user_params.id')
+            ->join('fiat_coin', 'fiat_coin.id', '=', 'user_params.currency_id')
             ->where('users.email', $data['email'])
             ->first();
 

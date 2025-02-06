@@ -51,7 +51,7 @@ class GoogleAuthController
         if ($data['status']) {
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $data['data'] ;
+            $this->dataJson = $data['returnData'] ;
             $this->message = 'Вход успешен';
         }
         else{

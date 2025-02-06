@@ -14,7 +14,7 @@ class UserParam extends Model
         'level',
         'gameCount',
         'referal',
-        'currency',
+        'currency_id',
         'refer_id',
         'country'
     ];

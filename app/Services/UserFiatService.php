@@ -18,7 +18,7 @@ class UserFiatService
     public function getUserCurrencies(User $user): array|null
      {
          $usedCurrencies = Account::select('fiat_coin.code')
-             ->where('user_id',  $user->id)
+             ->where('user_id', $user->id)
              ->join('fiat_coin','accounts.fiat_coin', '=', 'fiat_coin.id' )
              ->pluck('code')->toArray();
 
@@ -27,10 +27,9 @@ class UserFiatService
          $currencies = Countries::select('currencies')->where('code',  $user->params->country)->first();
          if( $currencies ){
              $currenciesArray = json_decode($currencies->currencies, true);
-log::info($currenciesArray);
-             log::info($usedCurrencies);
-             //Исключаем те валюты, которые уже использует пользователь
-             return $availableCurrencies = array_diff($currenciesArray, $usedCurrencies);
+
+             //берем доступные для страны валюты, но исключаем те валюты, которые уже использует пользователь
+             return array_diff($currenciesArray, $usedCurrencies);
          }
          else{
              return null;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BalanceRequest;
 use App\Models\Account;
 use App\Services\BalanceService;
+use App\Services\UserFiatService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +17,6 @@ class BalanceController extends Controller
     public function __construct(BalanceService $service){
         $this->service = $service;
     }
-
 
     public function index(): JsonResponse
     {
@@ -51,7 +51,9 @@ class BalanceController extends Controller
     {
         $data = $request->validated();
 
-        $balance = $service->setDefault($data);
+        $user = Auth::user();
+
+        $balance = $service->setDefault(currency: $data['currency'], user: $user);
 
         if($balance['status']){
             $this->status = 'success';

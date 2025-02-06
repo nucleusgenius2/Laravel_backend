@@ -14,6 +14,7 @@ class CountryController extends Controller
         $this->status = 'success';
         $this->code = 200;
         $this->dataJson = Countries::select('code','title','phone_prefix')->get();
+
         return $this->responseJsonApi();
     }
 

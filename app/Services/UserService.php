@@ -40,15 +40,17 @@ class UserService
             //создали юзера
             $user = User::create($userData);
 
-            $fiat = FiatCoin::select('id')->where('code', $data['currency'])->first();
+            $fiat = FiatCoin::select('id', 'code')->where('code', $data['currency'])->first();
 
             if(!$fiat){
                 throw new \Exception('Не валидный код валюты: ' . $data['currency']);
             }
 
+            $user->main_currency = $fiat->code;
+
             $dataParam = [
                 'id' => $user->id,
-                'currency' => $fiat->id,
+                'currency_id' => $fiat->id,
                 'level' => 1,
                 'referal' => GenerateUniqueString::generate($user->id, 10),
                 'country' => $country
@@ -148,17 +150,13 @@ class UserService
 
         if ($user) {
             $token = $user->createToken('token', ['permission:user'])->plainTextToken;
-            $returnData = [
-                'token' => $token,
-                'user' => $user->name,
-                'level' => $this->getUserLevel($user->id),
-                'currency' => $user->currency,
-                'balance' => 0
-            ];
+
+            $userData = $this->returnAuthData(user: $user, token: $token);
 
             return [
                 'status' => true,
-                'data' => $returnData,
+                'token' => $token ,
+                'returnData' => $userData,
             ];
         }
 
@@ -192,7 +190,7 @@ class UserService
                     'token' => $userData['token'],
                     'user' => $userData['fullUserData']['user']['name'],
                     'level' => $this->getUserLevel($userData['fullUserData']['user']['id']),
-                    'currency' => $userData['fullUserData']['userParam']['currency'],
+                    'currency' => $userData['fullUserData']['userParam']['currency_id'],
                     'balance' => 0
                 ];
 
@@ -213,7 +211,6 @@ class UserService
     public function getUserLevel(int $userId): array|null
     {
         // Выполнение хранимой процедуры
-        //$result = DB::select('CALL getUserLevel(?)', [$userId]);
         $result = DB::select('select * from public."getUserLevel"(?)', [$userId]);
 
         if (count($result) > 0) {
@@ -238,10 +235,11 @@ class UserService
                 'token' => $token,
                 'user_name' => $user->name,
                 'level' => $this->getUserLevel($user->id),
-                'currency' => $userParam->currency,
+                'currency_id' => $userParam->currency_id,
+                'main_currency' => $user->main_currency,
                 'balance' => 0,
                 'country' => $userParam->country,
-                'avatar' => $userParam->avatar
+                'avatar' => $userParam->avatar,
             ];
         }
         else{
@@ -249,7 +247,8 @@ class UserService
                 'token' => $token,
                 'user_name' => $user->name,
                 'level' => $this->getUserLevel($user->id),
-                'currency' => $user->currency,
+                'currency_id' => $user->currency_id,
+                'main_currency' => $user->main_currency,
                 'balance' => 0,
                 'country' => $user->country,
                 'avatar' => $user->avatar

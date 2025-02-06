@@ -16,13 +16,13 @@ class CountriesSeeder extends Seeder
                     'code' => 'RU',
                     'phone_prefix' => 7,
                     'title' => 'Russian Federation',
-                    'currencies' => json_encode(['RUB'])
+                    'currencies' => json_encode(['RUB','BTC','USDT','ETH'])
                 ],
                 [
                     'code' => 'US',
                     'phone_prefix' => 1,
                     'title' => 'United States of America',
-                    'currencies' => json_encode(['USD'])
+                    'currencies' => json_encode(['USD','BTC','USDT','ETH'])
                 ]
             ]);
         }
