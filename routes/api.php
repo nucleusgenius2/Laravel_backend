@@ -3,6 +3,7 @@
 use App\Events\ChatMessageSent;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistrationController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\Social\GoogleAuthController;
 use App\Http\Controllers\Auth\Social\SteamAuthController;
 use App\Http\Controllers\Auth\Social\TelegramAuthController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\Auth\Social\VkAuthController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Payments\CryptoCloudController;
+use App\Http\Controllers\Payments\CryptoCloudWalletController;
 use App\Http\Controllers\State\AdvertController;
 use App\Http\Controllers\State\FiatCoinController;
 use App\Http\Controllers\State\GameStateController;
@@ -35,7 +38,6 @@ Route::prefix('v1')->group(function () {
             Route::get('auth/google/callback', [GoogleAuthController::class, 'handleCallback']);
             Route::get('auth/steam', [SteamAuthController::class, 'redirect']);
             Route::get('auth/steam/callback', [SteamAuthController::class, 'handleCallback']);
-
         });
 
         Route::middleware(['auth:sanctum'])->group(function () {
@@ -48,6 +50,9 @@ Route::prefix('v1')->group(function () {
 
         Route::post('auth', [LoginController::class, 'login']);
         Route::post('registration', [RegistrationController::class, 'registration']);
+
+        Route::post('/reset_password', [ResetPasswordController::class, 'resetEmailMessage']);
+        Route::patch('/reset_password', [ResetPasswordController::class, 'resetLink']);
     });
 
 
@@ -80,6 +85,18 @@ Route::prefix('v1')->group(function () {
             Route::post('notification', [NotificationController::class, 'store']);
         });
     });
+
+    Route::prefix('payment')->group(function () {
+
+        Route::middleware(['auth:sanctum'])->group(function () {
+            //Route::get('/pay_crypto', [CryptoCloudController::class, 'createPayment']);
+            Route::get('/pay_crypto', [CryptoCloudWalletController::class, 'createPayment']);
+        });
+    });
+
+
+    //Route::post('/cryptocloud_payments/callback', [CryptoCloudController::class, 'callback']);
+    Route::post('/cryptocloud_payments/callback', [CryptoCloudWalletController::class, 'callback']);
 
 });
 

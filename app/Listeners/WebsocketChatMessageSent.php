@@ -13,7 +13,7 @@ class WebsocketChatMessageSent
     public function handle(NotificationsWebsocketSend|WinnersWebsocketSend|ChatMessageSent $event): void
     {
         $url = config("websocket.websocket_node_local_uri");
-log::info('отправка сокета');
+
         $data = [
             'type' => $event->getType(),
             'data' => $event->getData(),

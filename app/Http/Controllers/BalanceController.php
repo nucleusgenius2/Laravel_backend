@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Services\BalanceService;
 use App\Services\UserFiatService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -18,9 +19,9 @@ class BalanceController extends Controller
         $this->service = $service;
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $balance = $this->service->getBalance();
+        $balance = $this->service->getBalance(user: $request->user());
 
         $this->status = 'success';
         $this->code = 200;
@@ -33,7 +34,7 @@ class BalanceController extends Controller
     {
         $data = $request->validated();
 
-        $balance = $this->service->addBalance($data);
+        $balance = $this->service->addBalance(currency: $data['currency'], user: $request->user());
 
         if($balance['status']){
             $this->status = 'success';
@@ -47,13 +48,11 @@ class BalanceController extends Controller
         return $this->responseJsonApi();
     }
 
-    public function setDefault(BalanceRequest $request, BalanceService $service): JsonResponse
+    public function setDefault(BalanceRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $user = Auth::user();
-
-        $balance = $service->setDefault(currency: $data['currency'], user: $user);
+        $balance = $this->service->setDefault(currency: $data['currency'], user: $request->user());
 
         if($balance['status']){
             $this->status = 'success';

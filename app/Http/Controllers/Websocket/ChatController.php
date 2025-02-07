@@ -22,12 +22,9 @@ class ChatController extends Controller
         $this->service = $service;
     }
 
-
     public function index(CountRequest $request, ChatService $service): JsonResponse
     {
         $data = $request->validated();
-
-       // $messages = Chats::orderBy('id', 'desc')->limit($data['count'])->get();
 
         $messages = $service->getDataChat($data['count']);
 
@@ -47,9 +44,6 @@ class ChatController extends Controller
            'user' => $request->user()->id,
            'created_at' => Carbon::now(),
         ]);
-
-        //$userDto = new WebsocketDto($request->user()->id, $request->user()->name, $data['content']);
-       // event(new ChatMessageSent($userDto));
 
         $this->status = 'success';
         $this->code = 200;

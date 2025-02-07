@@ -73,7 +73,7 @@ class PlayGameController extends Controller
                 'currency' => 'RUB',
             ];
 
-            $userData = $service->createUser($data);
+            $userData = $service->createUser($data, 'RU');
 
             $game = Game::create([
                 'gameId' => GenerateUniqueString::generateName(10),

@@ -19,7 +19,7 @@ class FiatCoinController extends Controller
      {
          $this->status = 'success';
          $this->code = 200;
-         $this->dataJson = FiatCoin::all();
+         $this->dataJson = FiatCoin::where('type',"fiat")->get();
 
          return $this->responseJsonApi();
      }

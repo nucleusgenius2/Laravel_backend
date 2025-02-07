@@ -18,7 +18,13 @@ class BalanceService
 {
     use CurrencyRateProvider;
 
-    public function getBalance(): Collection
+    protected UserFiatService $service;
+
+    public function __construct(UserFiatService $service){
+        $this->service = $service;
+    }
+
+    public function getBalance(User $user): Collection
     {
         $balance = Account::select(
             'accounts.type',
@@ -32,17 +38,17 @@ class BalanceService
             'fiat_coin.code as currency_code',
             'fiat_coin.id as currency_id',
         )
-            ->where('accounts.user_id', Auth::user()->id)
+            ->where('accounts.user_id', $user->id)
             ->rightJoin('balances', 'accounts.id', '=', 'balances.account_id')
             ->join('fiat_coin', 'accounts.fiat_coin', '=', 'fiat_coin.id')
             ->get();
 
-        $mainCurrencyId = UserParam::select('currency')->where('id', Auth::user()->id)->first();
+        $mainCurrencyId = UserParam::select('currency_id')->where('id', $user->id)->first();
 
 
         $balance = $balance->map(function ($item) use ($mainCurrencyId) {
 
-            $item->default = $item->currency_id == $mainCurrencyId->currency;
+            $item->default = $item->currency_id == $mainCurrencyId->currency_id;
 
             $item->currency = [
                 'name' => $item->currency_name,
@@ -65,34 +71,38 @@ class BalanceService
     }
 
 
-    public function addBalance(array $data): array
+    public function addBalance(string $currency, User $user): array
     {
-        $user = Auth::user();
-
         DB::beginTransaction();
 
         try {
-            $fiat = FiatCoin::select('id')->where('code', $data['currency'])->first();
+            $newCurrency= FiatCoin::select('id','code')->where('code', $currency)->first();
 
-            if(!$fiat){
-                throw new \Exception('Не валидный код валюты: ' . $data['currency']);
+            if(!$newCurrency){
+                throw new \Exception('Не валидный код валюты: ' . $currency);
             }
 
-            if(Account::where([['user_id', $user->id],['fiat_coin' , $fiat->id]])->exists()){
-                throw new \Exception('счет с данной валютой уже есть ' . $data['currency']);
+            $availableCurrencies = $this->service->getUserCurrencies(user: $user);
+
+            if( !$availableCurrencies ){
+                throw new \Exception('Данная валюта не доступна в вашей стране ' . $currency);
+            }
+
+            if ( !in_array($newCurrency->code, $availableCurrencies)) {
+                throw new \Exception('Счет с данной валютой уже есть или валюта недоступна в вашей стране ' . $currency);
             }
 
 
             $accountMain = Account::create([
                 'user_id' => $user->id,
                 'type' => 'main',
-                'fiat_coin' => $fiat->id
+                'fiat_coin' => $newCurrency->id
             ]);
 
             $accountMintwin = Account::create([
                 'user_id' => $user->id,
                 'type' => 'mintwin',
-                'fiat_coin' => $fiat->id
+                'fiat_coin' => $newCurrency->id
             ]);
 
             $balance = [
@@ -126,30 +136,18 @@ class BalanceService
         DB::beginTransaction();
 
         try {
-            $fiat = FiatCoin::select('id','code')->where('code', $currency)->first();
+            $newCurrency = FiatCoin::select('id','code','type')->where('code', $currency)->first();
 
-            if(!$fiat){
+            if(!$newCurrency ){
                 throw new \Exception('Не валидный код валюты: ' . $currency);
             }
 
-            if(!Account::where([['user_id', $user->id],['fiat_coin' , $fiat->id]])->exists()){
+            if(!Account::where([['user_id', $user->id],['fiat_coin' , $newCurrency->id]])->exists()){
                 throw new \Exception('у юзера нет счета с данной валютой ' . $currency);
             }
 
-            $currencies = Countries::select('currencies')->where('code', $user->params->country)->first();
-            if( $currencies ){
-                $currenciesArray = json_decode($currencies->currencies, true);
-
-                if (!in_array($fiat->code, $currenciesArray)) {
-                    throw new \Exception('В стране юзера не доступна данная валюта или она уже выбрана: ' . $currency);
-                }
-            }
-            else{
-                throw new \Exception('В стране юзера не доступна данная валюта или она уже выбрана: ' . $currency);
-            }
-
             $update = UserParam::where('id', $user->id)->update([
-                'currency_id' => $fiat->id,
+                'currency_id' => $newCurrency->id,
             ]);
 
             $balanceOldBonusData = Account::select(
@@ -157,30 +155,46 @@ class BalanceService
                     'balances.amount as amount',
                     'balances.id as balances_id',
                     'fiat_coin.code as code',
+                    'fiat_coin.type as type',
                 )
                 ->where([
                     ['accounts.user_id', $user->id],
                     ['accounts.type', 'bonus']
                 ])
                 ->join('balances','accounts.id','=','balances.account_id')
-                ->join('fiat_coin','accounts.id','=','fiat_coin.id')
+                ->join('fiat_coin','accounts.fiat_coin','=','fiat_coin.id')
                 ->first();
 
-            log::info($balanceOldBonusData);
-            $cost = $this->convert($balanceOldBonusData->code, $fiat->code);
 
-            log::info($cost);
+            $cost = $this->convert(currencyPrev: $balanceOldBonusData->code, currencyNext: $newCurrency->code);
+            if (!$cost){
+                throw new \Exception('Данные о курсе валют не получены: ' . $balanceOldBonusData->code.' '.$newCurrency->code);
+            }
 
-/*
-            Account::where([
+            //округление 8 знаков для крипты и 2 для обычных валют
+            if($newCurrency->type==='crypto' || $balanceOldBonusData->type==='crypto' ) {
+                $cost = sprintf('%.8f', $cost);
+                $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 8);
+            }
+            else{
+                $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 2);
+            }
+
+            log::info('итог'.$newAmount);
+
+            $accountUpdate = Account::where([
                 ['user_id', $user->id],
-                ['fiat_coin', $fiat->id],
                 ['type', 'bonus']
             ])->update([
-                'currency_id' => $fiat->id,
+                'fiat_coin' => $newCurrency->id,
             ]);
-*/
-           //тут мы должны с конвертировать баланс с бонусного счета в выбранную по умолчанию валюту
+
+
+            $balanceUpdate = Balance::where(
+                'account_id', $balanceOldBonusData->account_id,
+            )->update([
+                'amount' => $newAmount
+            ]);
 
 
             DB::commit();

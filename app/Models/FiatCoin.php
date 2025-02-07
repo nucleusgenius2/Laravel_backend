@@ -13,5 +13,6 @@ class FiatCoin extends Model
         'code',
         'name',
         'country',
+        'type'
     ];
 }
