@@ -15,7 +15,8 @@
         "predis/predis": "^2.3",
         "socialiteproviders/steam": "^4.3",
         "socialiteproviders/telegram": "^4.1",
-        "socialiteproviders/vkontakte": "^5.0"
+        "socialiteproviders/vkontakte": "^5.0",
+        "stevebauman/location": "^7.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
