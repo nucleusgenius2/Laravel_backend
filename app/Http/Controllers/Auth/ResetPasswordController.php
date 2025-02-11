@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\DTO\DataStringDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\ResetPasswordRequest;
@@ -27,14 +28,14 @@ class ResetPasswordController extends Controller
     {
         $data = $request->validated();
 
-        $returnData = $this->service->reset(email: $data['email'] );
+        $dataEmptyDto = $this->service->getCodeResetPassword(email: $data['email'] );
 
-        if($returnData->status){
+        if( $dataEmptyDto->status){
             $this->status = 'success';
             $this->code = 200;
         }
         else {
-            $this->message = $returnData->error;
+            $this->message = $dataEmptyDto->error;
         }
 
         return $this->responseJsonApi();
@@ -44,6 +45,9 @@ class ResetPasswordController extends Controller
     public function resetLink(ResetPasswordRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $returnData = $this->service->resetPassword(password: $data['password'], code:  $data['code'] );
+
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),

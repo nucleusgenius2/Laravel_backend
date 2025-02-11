@@ -23,7 +23,7 @@ class CryptoCloudService
     /**
      * Создание счета на оплату
      */
-    public function createInvoice(User $user, float $amount, string $currency): array
+    public function createInvoice(User $user, string $amount, string $currency): array
     {
         $orderId = uniqid();
 

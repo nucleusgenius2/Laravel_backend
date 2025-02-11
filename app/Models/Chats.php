@@ -30,7 +30,7 @@ class Chats extends Model
 
         static::created(function ($chatMessage) {
 
-            $WebsocketDto = new WebsocketDto($chatMessage->user, Auth::user()->name,  $chatMessage->content);
+            $WebsocketDto = new WebsocketDto(userId: $chatMessage->user, userName: Auth::user()->name,  data: $chatMessage->content);
 
             event(new ChatMessageSent($WebsocketDto));
         });

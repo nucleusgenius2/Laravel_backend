@@ -64,7 +64,6 @@ class UserService
                 }
             }
 
-
             //создали параметры юзера
             $userParam = UserParam::create($dataParam);
 
@@ -76,7 +75,6 @@ class UserService
                 'type' => 'main',
                 'fiat_coin' => $fiat->id
             ]);
-
 
             $accountBonus = Account::create([
                 'user_id' => $user->id,
@@ -114,12 +112,11 @@ class UserService
 
             }
 
-
             Balance::insert($balance);
 
-            DB::commit();
-
             $userData = $this->returnAuthData(user: $user, token: $token, userParam: $userParam);
+
+            DB::commit();
 
             return [
                 'status' => true,
@@ -191,7 +188,7 @@ class UserService
                     'user' => $userData['fullUserData']['user']['name'],
                     'level' => $this->getUserLevel($userData['fullUserData']['user']['id']),
                     'currency' => $userData['fullUserData']['userParam']['currency_id'],
-                    'balance' => 0
+                    'balance' => $this->getMainBalance($userData['fullUserData']['user']['id'])
                 ];
 
                 return [
@@ -211,6 +208,7 @@ class UserService
     public function getUserLevel(int $userId): array|null
     {
         // Выполнение хранимой процедуры
+
         $result = DB::select('select * from public."getUserLevel"(?)', [$userId]);
 
         if (count($result) > 0) {
@@ -226,6 +224,21 @@ class UserService
         }
 
         return null;
+
+    }
+
+
+    public function getMainBalance(int $userId): float|null
+    {
+        // Выполнение хранимой процедуры
+       $result = DB::select('select * from public."getMainBalance"(?)', [$userId]);
+
+        if (count($result) > 0) {
+            $amount = $result[0]->amount;
+            return $amount;
+        }
+
+        return null;
     }
 
     public function returnAuthData(User $user, string $token, ?UserParam $userParam = null): array
@@ -235,11 +248,17 @@ class UserService
                 'token' => $token,
                 'user_name' => $user->name,
                 'level' => $this->getUserLevel($user->id),
-                'currency_id' => $userParam->currency_id,
                 'main_currency' => $user->main_currency,
-                'balance' => 0,
+                'balance' => $this->getMainBalance($user->id),
                 'country' => $userParam->country,
                 'avatar' => $userParam->avatar,
+                'user_cfg' => [
+                    'cfg_sound' => $userParam->cfg_sound,
+                    'cfg_music' => $userParam->cfg_music,
+                    'cfg_effect' => $userParam->cfg_effect,
+                    'cfg_hidden_game' => $userParam->cfg_hidden_game,
+                    'cfg_animation' => $userParam->cfg_animation,
+                ],
             ];
         }
         else{
@@ -247,11 +266,17 @@ class UserService
                 'token' => $token,
                 'user_name' => $user->name,
                 'level' => $this->getUserLevel($user->id),
-                'currency_id' => $user->currency_id,
                 'main_currency' => $user->main_currency,
-                'balance' => 0,
+                'balance' => $this->getMainBalance($user->id),
                 'country' => $user->country,
-                'avatar' => $user->avatar
+                'avatar' => $user->avatar,
+                'user_cfg' => [
+                    'cfg_sound' => $user->cfg_sound,
+                    'cfg_music' => $user->cfg_music,
+                    'cfg_effect' => $user->cfg_effect,
+                    'cfg_hidden_game' => $user->cfg_hidden_game,
+                    'cfg_animation' => $user->cfg_animation,
+                ],
             ];
         }
     }

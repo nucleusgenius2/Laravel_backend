@@ -34,15 +34,15 @@ class BalanceController extends Controller
     {
         $data = $request->validated();
 
-        $balance = $this->service->addBalance(currency: $data['currency'], user: $request->user());
+        $dataEmptyDto = $this->service->addBalance(currency: $data['currency'], user: $request->user());
 
-        if($balance['status']){
+        if($dataEmptyDto->status){
             $this->status = 'success';
             $this->code = 200;
         }
         else{
             $this->code = 500;
-            $this->message = $balance['error'];
+            $this->message = $dataEmptyDto->error;
         }
 
         return $this->responseJsonApi();
@@ -52,15 +52,15 @@ class BalanceController extends Controller
     {
         $data = $request->validated();
 
-        $balance = $this->service->setDefault(currency: $data['currency'], user: $request->user());
+        $dataEmptyDto = $this->service->setDefault(currency: $data['currency'], user: $request->user());
 
-        if($balance['status']){
+        if($dataEmptyDto->status){
             $this->status = 'success';
             $this->code = 200;
         }
         else{
             $this->code = 500;
-            $this->message = $balance['error'];
+            $this->message = $dataEmptyDto->error;
         }
 
         return $this->responseJsonApi();

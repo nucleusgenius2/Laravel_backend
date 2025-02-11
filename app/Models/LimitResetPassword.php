@@ -10,6 +10,7 @@ class LimitResetPassword extends Model
 
     protected $fillable = [
         'user_email',
+        'code'
     ];
 }
 

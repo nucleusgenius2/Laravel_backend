@@ -35,7 +35,7 @@ class PlayGame extends Model
                     $service = app()->make(GameService::class);
                     $data = $service->getPlayGame($playGame->id);
 
-                    $WebsocketDto = new WebsocketDto($playGame->user_id, $data['user']['name'], json_encode($data));
+                    $WebsocketDto = new WebsocketDto(userId: $playGame->user_id, userName: $data['user']['name'], data: json_encode($data));
                     event(new WinnersWebsocketSend($WebsocketDto));
                 });
             }

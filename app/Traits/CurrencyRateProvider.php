@@ -29,4 +29,14 @@ trait CurrencyRateProvider
             return null;
         }
     }
+
+    public function convertTotal(string $cost, string $amount): string
+    {
+        log::info( 'конвертация');
+        log::info( 'курс '.$cost);
+        log::info( 'сумма '.$amount);
+        //округление 8 знаков для крипты и 2 для обычных валют
+        $cost = sprintf('%.12f', $cost);
+        return bcmul((string)$amount, (string)$cost, 12);
+    }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Payments;
 
+use App\DTO\DataStringDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CryptoCloudRequest;
-use App\Http\Requests\CryptoCloudWalletRequest;
 use App\Models\Countries;
+use App\Models\UserParam;
 use App\Services\Payments\CryptoCloudWalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -20,32 +21,36 @@ class CryptoCloudWalletController extends Controller
         $this->service = $service;
     }
 
-    public function createPayment(CryptoCloudWalletRequest $request)
+    public function createPayment(CryptoCloudRequest $request)
     {
         $data = $request->validated();
-        $invoice = $this->service->createInvoice(
+
+        $dataStringDto = $this->service->createInvoice(
             user: $request->user(),
-            currency: $data['currency']
+            currency: $data['currency'],
+            amount: $data['amount']
         );
 
-        if ($invoice['status'] =='success'){
+        if ($dataStringDto->status){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $invoice['data'];
+            $this->dataJson = $dataStringDto->data;
         }
         else{
-            $this->dataJson = $invoice;
+            $this->message = $dataStringDto->error;
         }
 
         return $this->responseJsonApi();
     }
 
-
-
     public function callback(Request $request)
     {
-        log::info('колбек');
+        $invoice = $this->service->collback(requestData: $request->all());
+
+        log::info('колбек валлет');
         log::info($request->all());
+
+        $this->code = 200;
         return response()->json();
     }
 

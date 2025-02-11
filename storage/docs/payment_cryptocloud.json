@@ -1,0 +1,90 @@
+{
+    "cryptoCloudInvoice":  {
+        "summary": "Генерация счетов (кошельков) для crypto_cloud",
+        "operationId": "getPaymentAddress",
+        "tags": ["Payment"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "currency",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "BNB"
+                },
+                "description": "Код валюты"
+            },
+            {
+                "name": "amount",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "number",
+                    "example": 20
+                },
+                "description": "Ожидаемая сумма к оплате"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Возвращает кошелек для оплаты, его вернуть на фронт юзеру",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": "bc1qu3e4hpv776f3tzmj96tag8g5qjft5j0xd5vtc3"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Unauthorized",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthorized access",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "data": {
+                                "status": "error",
+                                "message": {
+                                    "amount": [
+                                        "The amount field is required."
+                                    ]
+                                },
+                                "json": []
+                            }
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Internal Server Error",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "счет юзера не найден",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -16,17 +16,17 @@ use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
-    protected BalanceService $service;
+    protected ChatService $service;
 
-    public function __construct(BalanceService $service){
+    public function __construct(ChatService $service){
         $this->service = $service;
     }
 
-    public function index(CountRequest $request, ChatService $service): JsonResponse
+    public function index(CountRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $messages = $service->getDataChat($data['count']);
+        $messages = $this->service->getDataChat($data['count']);
 
         $this->status = 'success';
         $this->code = 200;
@@ -39,15 +39,13 @@ class ChatController extends Controller
     {
         $data = $request->validated();
 
-        $messages = Chats::create([
-           'content' => $data['content'],
-           'user' => $request->user()->id,
-           'created_at' => Carbon::now(),
-        ]);
+        $dtaObjectDto = $this->service->createChatMessage(data: $data, user: $request->user() );
 
-        $this->status = 'success';
-        $this->code = 200;
-        $this->dataJson = $messages;
+        if($dtaObjectDto->status){
+            $this->status = 'success';
+            $this->code = 200;
+            $this->dataJson = $dtaObjectDto->data;
+        }
 
         return $this->responseJsonApi();
     }

@@ -52,6 +52,12 @@ return [
 
     'channels' => [
 
+        'cryptocloud' => [
+            'driver' => 'single', // Можно 'daily', 'stack', 'syslog' и др.
+            'path' => storage_path('logs/crypto_cloud.log'),
+            'level' => 'debug', // Уровень логирования (debug, info, error, etc.)
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', env('LOG_STACK', 'single')),

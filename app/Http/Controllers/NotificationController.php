@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\DataObjectDto;
 use App\Http\Requests\NotificationRequest;
 use App\Http\Requests\PageRequest;
 use App\Models\Notification;
+use App\Services\BalanceService;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -13,17 +16,23 @@ class NotificationController extends Controller
 {
     public int $perPageFrontend = 20;
 
+    protected NotificationService $service;
+
+    public function __construct(NotificationService $service){
+        $this->service = $service;
+    }
+
     public function index(PageRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $notifications = Notification::where('user_id', $request->user()->id)
-            ->orderBy('id', 'desc')
-            ->paginate($this->perPageFrontend, ['*'], 'page', $data['page']);
+        $dataObjectDto = $this->service->getNotifications(user: $request->user(), page: $data['page'], perPage: $this->perPageFrontend);
 
-        $this->status = 'success';
-        $this->code = 200;
-        $this->dataJson = $notifications;
+        if($dataObjectDto->status) {
+            $this->status = 'success';
+            $this->code = 200;
+            $this->dataJson = $dataObjectDto->data;
+        }
 
         return $this->responseJsonApi();
     }
@@ -32,17 +41,18 @@ class NotificationController extends Controller
     {
         if($id > 0) {
             //добавить сюда врата на проверку прав просмотра, когда будут роли юзеров
-            $notifications = Notification::where('id', $id)->first();
-            if($notifications){
+
+            $dataObjectDto = $this->service->showNotification(id: $id);
+
+            if($dataObjectDto->status){
                 $this->status = 'success';
                 $this->code = 200;
-                $this->dataJson = $notifications;
+                $this->dataJson = $dataObjectDto->data;
             }
             else{
                 $this->code = 404;
-                $this->message = 'Не найдено уведомления';
+                $this->message = $dataObjectDto->error;
             }
-
         }
         else{
             $this->code = 422;
@@ -57,21 +67,17 @@ class NotificationController extends Controller
         $data = $request->validated();
 
         //добавить сюда врата на проверку прав просмотра, когда будут роли юзеров
-        $notifications = Notification::create([
-            'user_id' => $data['user_id'],
-            'content' => $data['content'],
-            'created_at' => Carbon::now(),
-            'read' => 0
-        ]);
 
-        if($notifications){
+        $dataObjectDto = $this->service->createNotification(data: $data);
+
+        if($dataObjectDto->status){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $notifications;
+            $this->dataJson = $dataObjectDto->data;
         }
         else{
             $this->code = 500;
-            $this->message = 'Уведомление не было создано';
+            $this->message = $dataObjectDto->error;
         }
 
         return $this->responseJsonApi();

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\DTO\DataEmptyDto;
+use App\DTO\DataObjectDTO;
 use App\Models\Account;
 use App\Models\Balance;
 use App\Models\Countries;
@@ -71,7 +73,7 @@ class BalanceService
     }
 
 
-    public function addBalance(string $currency, User $user): array
+    public function addBalance(string $currency, User $user): DataEmptyDto
     {
         DB::beginTransaction();
 
@@ -82,10 +84,13 @@ class BalanceService
                 throw new \Exception('Не валидный код валюты: ' . $currency);
             }
 
-            $availableCurrencies = $this->service->getUserCurrencies(user: $user);
+            $dataArrayDto = $this->service->getUserCurrencies(user: $user);
 
-            if( !$availableCurrencies ){
+            if( !$dataArrayDto->status ){
                 throw new \Exception('Данная валюта не доступна в вашей стране ' . $currency);
+            }
+            else{
+                $availableCurrencies =  $dataArrayDto->data;
             }
 
             if ( !in_array($newCurrency->code, $availableCurrencies)) {
@@ -114,31 +119,23 @@ class BalanceService
 
             DB::commit();
 
-
-            return [
-                'status' => true,
-            ];
-
+            return new DataEmptyDto(status: true);
         }
         catch (\Exception $e) {
             DB::rollBack();
 
-            return [
-                'status' => false,
-                'error' => $e->getMessage(),
-            ];
-
+            return new DataEmptyDto(status: false, error: $e->getMessage() );
         }
     }
 
-    public function setDefault(string $currency, User $user): array
+    public function setDefault(string $currency, User $user): DataEmptyDto
     {
         DB::beginTransaction();
 
         try {
             $newCurrency = FiatCoin::select('id','code','type')->where('code', $currency)->first();
 
-            if(!$newCurrency ){
+            if(!$newCurrency){
                 throw new \Exception('Не валидный код валюты: ' . $currency);
             }
 
@@ -166,21 +163,26 @@ class BalanceService
                 ->first();
 
 
+            //конвертация валют
             $cost = $this->convert(currencyPrev: $balanceOldBonusData->code, currencyNext: $newCurrency->code);
             if (!$cost){
                 throw new \Exception('Данные о курсе валют не получены: ' . $balanceOldBonusData->code.' '.$newCurrency->code);
             }
 
+            $newAmount = $this->convertTotal(cost: $cost, amount: $balanceOldBonusData->amount);
+
+
+            /*
             //округление 8 знаков для крипты и 2 для обычных валют
-            if($newCurrency->type==='crypto' || $balanceOldBonusData->type==='crypto' ) {
-                $cost = sprintf('%.8f', $cost);
-                $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 8);
+            if($newCurrency->type==='crypto' || $balanceOldBonusData->type==='crypto') {
+                log::info('type '. $newCurrency->type);
+                $cost = sprintf('%.12f', $cost);
+                $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 12);
             }
             else{
                 $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 2);
             }
-
-            log::info('итог'.$newAmount);
+            */
 
             $accountUpdate = Account::where([
                 ['user_id', $user->id],
@@ -189,28 +191,20 @@ class BalanceService
                 'fiat_coin' => $newCurrency->id,
             ]);
 
-
             $balanceUpdate = Balance::where(
                 'account_id', $balanceOldBonusData->account_id,
             )->update([
                 'amount' => $newAmount
             ]);
 
-
             DB::commit();
 
-            return [
-                'status' => true
-            ];
+            return new DataEmptyDto(status: true);
         }
         catch (\Exception $e) {
             DB::rollBack();
 
-            return [
-                'status' => false,
-                'error' => $e->getMessage(),
-            ];
-
+            return new DataEmptyDto(status: false, error: $e->getMessage() );
         }
     }
 }

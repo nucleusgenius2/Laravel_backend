@@ -29,6 +29,31 @@
                         }
                     }
                 }
+            },
+            "400": {
+                "description": "Некорректный запрос",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "json": {
+                                    "type": "string",
+                                    "example": "Код вашей страны не найден"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },

@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\DTO\DataObjectDto;
 use App\Models\Chats;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class ChatService
@@ -31,5 +34,22 @@ class ChatService
         });
 
         return $formattedMessages;
+    }
+
+    public function createChatMessage(array $data, User $user): DataObjectDto
+    {
+        $message = Chats::create([
+            'content' => $data['content'],
+            'user' => $user->id,
+            'created_at' => Carbon::now(),
+        ]);
+        if($message) {
+            return new DataObjectDto(status: true, data: $message);
+        }
+        else{
+            return new DataObjectDto(status: false);
+        }
+
+
     }
 }

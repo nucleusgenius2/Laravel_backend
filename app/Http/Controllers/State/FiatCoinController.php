@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\State;
 
+use App\DTO\DataArrayDto;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Countries;
 use App\Models\FiatCoin;
 use App\Models\UserParam;
+use App\Services\ChatService;
 use App\Services\UserFiatService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -15,44 +17,52 @@ use Illuminate\Support\Facades\Log;
 
 class FiatCoinController extends Controller
 {
+
+    protected UserFiatService $service;
+
+    public function __construct(UserFiatService $service){
+        $this->service = $service;
+    }
+
      public function index(): JsonResponse
      {
-         $this->status = 'success';
-         $this->code = 200;
-         $this->dataJson = FiatCoin::where('type',"fiat")->get();
+         $dataObjectDto = $this->service->getCurrencies();
+
+         if($dataObjectDto->status) {
+             $this->status = 'success';
+             $this->code = 200;
+             $this->dataJson = $dataObjectDto->data;
+         }
 
          return $this->responseJsonApi();
      }
 
     public function show(string $code): JsonResponse
     {
-        if (!ctype_alnum($code)) {
-            $this->message = 'Не валидные данные';
-        } else {
-            $currency = FiatCoin::where('code', $code)->first();
+        $dataObjectDto = $this->service->showCurrencies(code: $code);
 
-            if ($currency) {
-                $this->status = 'success';
-                $this->code = 200;
-                $this->dataJson = $currency;
-            } else {
-                $this->code = 404;
-                $this->message = 'Валюта не найдена';
-            }
+        if ($dataObjectDto->status) {
+            $this->status = 'success';
+            $this->code = 200;
+            $this->dataJson = $dataObjectDto->data;
+        } else {
+            $this->code = 404;
+            $this->message = $dataObjectDto->error;
         }
 
         return $this->responseJsonApi();
     }
 
-    public function getFiatUser(UserFiatService $service): JsonResponse
+    public function getFiatUser(): JsonResponse
     {
         $user = Auth::user();
 
-        $data = $service->getUserCurrencies(user: $user);
-        if($data !== null){
+        $dataArrayDto = $this->service->getUserCurrencies(user: $user);
+
+        if( $dataArrayDto->status){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $data;
+            $this->dataJson = $dataArrayDto->data;
         } else{
             $this->code = 500;
         }

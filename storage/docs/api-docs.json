@@ -1,9 +1,9 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "User Registration API",
-        "description": "API for user registration and login.",
-        "version": "1.0.0"
+        "title": "WinMove services API",
+        "description": "WinMove services API",
+        "version": "1.0.1"
     },
     "components": {
         "securitySchemes": {
@@ -139,6 +139,13 @@
             "get": {
                 "$ref": "./advert.json#/getAdvert",
                 "tags": ["Statistics"]
+            }
+        },
+
+        "/api/v1/payment/pay_crypto": {
+            "get": {
+                "$ref": "./payment_cryptocloud.json#/cryptoCloudInvoice",
+                "tags": ["Payment"]
             }
         }
 

@@ -91,12 +91,15 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:sanctum'])->group(function () {
             //Route::get('/pay_crypto', [CryptoCloudController::class, 'createPayment']);
             Route::get('/pay_crypto', [CryptoCloudWalletController::class, 'createPayment']);
+
         });
+
+        Route::post('/cryptocloud/callback', [CryptoCloudWalletController::class, 'callback']);
     });
 
 
     //Route::post('/cryptocloud_payments/callback', [CryptoCloudController::class, 'callback']);
-    Route::post('/cryptocloud_payments/callback', [CryptoCloudWalletController::class, 'callback']);
+   // Route::post('/cryptocloud_payments/callback', [CryptoCloudWalletController::class, 'callback']);
 
 });
 

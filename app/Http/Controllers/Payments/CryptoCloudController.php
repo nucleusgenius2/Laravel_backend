@@ -35,6 +35,7 @@ class CryptoCloudController extends Controller
             $this->dataJson = $invoice['data']['link'];
         }
         else{
+            $this->code = 500;
             $this->dataJson = $invoice;
         }
 

@@ -23,7 +23,7 @@ class CryptoCloudRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric',
+            'amount' => 'required|string',
             'currency' => 'required', 'string', 'in:USD,UZS,KGS,KZT,AMD,AZN,BYN,AUD,TRY,AED,CAD,CNY,HKD,IDR,INR,JPY,PHP,SGD,THB,VND,MYR,RUB,UAH,EUR,GBP',
         ];
     }

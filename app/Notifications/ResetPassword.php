@@ -12,12 +12,14 @@ class ResetPassword extends Notification
 {
     use Queueable;
 
+    public string $code;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(string $code)
     {
-        //
+      $this->code = $code;
     }
 
     /**
@@ -35,14 +37,14 @@ class ResetPassword extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $resetUrl = url(config('app.url').route('password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false));
+       // $resetUrl = url(config('app.url').route('password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false));
 
         return (new MailMessage)
             ->subject(Lang::get('Запрос на смену пароля'))
             ->line('Если вы не отправляли запрос на смену пароля, то проигнорируйте данное письмо.')
             ->action('Восстановление пароля', url('/'))
             ->line('Нажмите кнопку ниже, чтобы задать новый пароль')
-            ->view('emails.reset-password',  ['resetUrl' => $resetUrl]);
+            ->view('emails.reset-password',  ['code' => $this->code]);
     }
 
     /**

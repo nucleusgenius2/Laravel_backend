@@ -16,6 +16,11 @@ class UserParam extends Model
         'referal',
         'currency_id',
         'refer_id',
-        'country'
+        'country',
+        'cfg_music',
+        'cfg_sound',
+        'cfg_effect',
+        'cfg_animation',
+        'cfg_hidden_game'
     ];
 }

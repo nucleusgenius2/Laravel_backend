@@ -46,6 +46,13 @@ class FiatCoinSeeder extends Seeder
                     'name' => 'Ethereum',
                     'type' => 'crypto',
                     'country' => '',
+                ],
+                [
+                    'img' => '',
+                    'code' => 'BNB',
+                    'name' => 'Binance Coin',
+                    'type' => 'crypto',
+                    'country' => '',
                 ]
             ]);
 
