@@ -147,6 +147,34 @@
                 "$ref": "./payment_cryptocloud.json#/cryptoCloudInvoice",
                 "tags": ["Payment"]
             }
+        },
+
+        "/api/v1/user/reset_password": {
+            "post": {
+                "$ref": "./reset_password.json#/generateCode",
+                "tags": ["Authentication"]
+            },
+            "patch": {
+                "$ref": "./reset_password.json#/resetPassword",
+                "tags": ["Authentication"]
+            }
+        },
+        "/api/v1/user/change_email": {
+            "post": {
+               "$ref": "./change_email.json#/generateCode",
+               "tags": ["Profile"]
+            },
+            "patch": {
+                "$ref": "./change_email.json#/resetPassword",
+                "tags": ["Profile"]
+            }
+        },
+
+        "/api/v1/user/": {
+            "get": {
+                "$ref": "./user_check_auth.json#/authData",
+                "tags": ["Authentication"]
+            }
         }
 
     }

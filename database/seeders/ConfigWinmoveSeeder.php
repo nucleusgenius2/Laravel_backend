@@ -18,6 +18,11 @@ class ConfigWinmoveSeeder extends Seeder
                     'is_active' => 1,
                     'val' => 100,
                 ],
+                [
+                    'param' => 'change_email_limit',
+                    'is_active' => 1,
+                    'val' => 1,
+                ],
             ]);
         }
     }

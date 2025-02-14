@@ -37,8 +37,6 @@ class ResetPassword extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-       // $resetUrl = url(config('app.url').route('password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false));
-
         return (new MailMessage)
             ->subject(Lang::get('Запрос на смену пароля'))
             ->line('Если вы не отправляли запрос на смену пароля, то проигнорируйте данное письмо.')

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth\Social;
 use App\Http\Requests\AuthProviderRequest;
-use App\Services\UserService;
+use App\Services\User\UserService;
 use App\Traits\StructuredResponse;
 use Laravel\Socialite\Facades\Socialite;
 

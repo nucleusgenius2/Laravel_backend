@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\FiatCoin;
 use App\Models\Game;
 use App\Models\PlayGame;
-use App\Services\UserService;
+use App\Services\User\UserService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;

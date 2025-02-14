@@ -1,0 +1,179 @@
+{
+    "generateCode": {
+        "summary": "генерация кода на смену email пользователя",
+        "description": "Создание и отправка кода на новый email, который указал пользователь.",
+        "tags": ["Profile"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "email",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "description": "Новый email пользователя"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Email успешно изменен",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "400": {
+                "description": "Лимит смены почт достигнут",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Лимит смены почт достигнут",
+                            "status": "error",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизованный доступ",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "data": {
+                                "status": "error",
+                                "message": {
+                                    "email": [
+                                        "The email field is required."
+                                    ]
+                                },
+                                "json": []
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "resetPassword": {
+        "summary": "Смена email пользователя",
+        "description": "Принимает email и код и меняет email в случае успеха",
+        "tags": ["Profile"],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "email": {
+                                "type": "string",
+                                "format": "email",
+                                "example": "user@example.com"
+                            },
+                            "code": {
+                                "type": "string",
+                                "pattern": "^\\d{5}$",
+                                "example": "12345"
+                            }
+                        },
+                        "required": ["email", "code"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Успешное изменение email",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "nullable": true },
+                                "status": { "type": "string", "example": "success" },
+                                "json": { "type": "string", "nullable": true }
+                            }
+                        }
+                    }
+                }
+            },
+            "400": {
+                "description": "Ошибка неверного кода подтверждения",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": "Код не верен" },
+                                "status": { "type": "string", "example": "error" },
+                                "json": { "type": "string", "nullable": true }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизованный доступ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": "Unauthenticated." }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": { "type": "string", "example": "error" },
+                                        "message": {
+                                            "type": "object",
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": { "type": "string", "example": "The email field is required." }
+                                                }
+                                            }
+                                        },
+                                        "json": { "type": "array", "items": {} }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

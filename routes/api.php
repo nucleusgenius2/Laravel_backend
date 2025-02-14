@@ -1,6 +1,6 @@
 <?php
 
-use App\Events\ChatMessageSent;
+use App\Http\Controllers\Auth\CheckAuthUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -11,8 +11,8 @@ use App\Http\Controllers\Auth\Social\VkAuthController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\Payments\CryptoCloudController;
 use App\Http\Controllers\Payments\CryptoCloudWalletController;
+use App\Http\Controllers\Profile\ChangeEmailController;
 use App\Http\Controllers\State\AdvertController;
 use App\Http\Controllers\State\FiatCoinController;
 use App\Http\Controllers\State\GameStateController;
@@ -41,18 +41,23 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::middleware(['auth:sanctum'])->group(function () {
+            Route::get('/', [CheckAuthUserController::class, 'index']);
+
             Route::get('balance', [BalanceController::class, 'index']);
             Route::post('balance', [BalanceController::class, 'store']);
             Route::post('default_balance', [BalanceController::class, 'setDefault']);
 
             Route::get('currencies_user', [FiatCoinController::class, 'getFiatUser']);
+
+            Route::get('change_email', [ChangeEmailController::class, 'changeEmail']);
+            Route::patch('change_email', [ChangeEmailController::class, 'verificationEmail']);
         });
 
         Route::post('auth', [LoginController::class, 'login']);
         Route::post('registration', [RegistrationController::class, 'registration']);
 
-        Route::post('/reset_password', [ResetPasswordController::class, 'resetEmailMessage']);
-        Route::patch('/reset_password', [ResetPasswordController::class, 'resetLink']);
+        Route::post('reset_password', [ResetPasswordController::class, 'resetGeneratedCode']);
+        Route::patch('reset_password', [ResetPasswordController::class, 'resetPassword']);
     });
 
 

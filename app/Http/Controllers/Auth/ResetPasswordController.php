@@ -2,19 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\DTO\DataStringDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Models\LimitResetPassword;
-use App\Services\ResetPasswordService;
-use Illuminate\Auth\Events\PasswordReset;
+use App\Services\User\ResetPasswordService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
@@ -24,7 +16,13 @@ class ResetPasswordController extends Controller
     {
         $this->service = $service;
     }
-    public function resetEmailMessage(EmailRequest $request): JsonResponse
+
+    /**
+     * Генерация кода восстановления пароля и отправка его на почту
+     * @param EmailRequest $request
+     * @return JsonResponse
+     */
+    public function resetGeneratedCode(EmailRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -35,6 +33,7 @@ class ResetPasswordController extends Controller
             $this->code = 200;
         }
         else {
+            $this->code = 400;
             $this->message = $dataEmptyDto->error;
         }
 
@@ -42,29 +41,24 @@ class ResetPasswordController extends Controller
     }
 
 
-    public function resetLink(ResetPasswordRequest $request): JsonResponse
+    /**
+     * Установка нового пароля по коду
+     * @param ResetPasswordRequest $request
+     * @return JsonResponse
+     */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $returnData = $this->service->resetPassword(password: $data['password'], code:  $data['code'] );
-
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-                function ($user, $password) {
-                    $user->forceFill([
-                        //'password' => Hash::make($password)
-                        //  'password' => bcrypt($password)
-                        'password' => $password
-                    ])->setRememberToken(Str::random(60));
-                    $user->save();
-
-                    $this->status = 'success';
-
-                    event(new PasswordReset($user));
-                }
-        );
-
+        $dataEmptyDto = $this->service->resetPassword(password: $data['password'], code: $data['code']);
+        if( $dataEmptyDto->status){
+            $this->status = 'success';
+            $this->code = 200;
+        }
+        else {
+            $this->code = 400;
+            $this->message = $dataEmptyDto->error;
+        }
 
         return $this->responseJsonApi();
     }

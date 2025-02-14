@@ -31,6 +31,11 @@ class User extends Authenticatable
         'provider_type',
     ];
 
+    protected $casts = [
+        'email_verified' => 'boolean',
+    ];
+
+
     /**
      * The attributes that should be hidden for serialization.
      *

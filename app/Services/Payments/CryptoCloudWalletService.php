@@ -50,6 +50,7 @@ log::info('кастом валлет id'.$orderId);
                 'identify' => $orderId,
             ]);
 log::info($response);
+
         if($response['status']){
 
             DB::beginTransaction();
@@ -60,15 +61,14 @@ log::info($response);
                     throw new \Exception('Валюта не доступна');
                 }
 
-                $currencyUserSelected = UserParam::where('id',$user->id )->value('currency_id');
+                $currencyUserSelected = UserParam::where('id',$user->id)->value('currency_id');
 
-                log::info('id валюты юзера '.  $currencyUserSelected);
                 $payment = Payment::create([
                     'user_id' => $user->id,
                     'invoice_uid' => $orderId,
                     'processing' => 'crypto_cloud_wallet',
-                    'amount_income' => $amount,
-                    'currency_income_id' => $currencyUserSelected,
+                    'amount_wait' => $amount,
+                    'currency_id' => $currencyUserSelected,
                     'status' => config('payments.status.not_paid'),
                     'date_start' => Carbon::now()
                 ]);
@@ -107,8 +107,8 @@ log::info($response);
         ]);
 
         if ($validated->fails()) {
-            log::error('Не валидный запрос на колбек крипто клауд');
-            log::error(json_encode($requestData));
+            log::channel('cryptocloud')->error('Не валидный запрос на колбек крипто клауд');
+            log::channel('cryptocloud')->error(json_encode($requestData));
         } else {
             if($requestData['status'] === 'success'){
                 DB::beginTransaction();
@@ -128,12 +128,9 @@ log::info($response);
                     }
 
                     $payment->date_completion = Carbon::now();
-                    $payment->amount = $requestData['amount_crypto'];
-                    $payment->currency_id = $currencyCallback->id;
+                    $payment->currency_income_id = $currencyCallback->id;
                     $payment->status = config('payments.status.success');
-                    $payment->save();
-
-                    log::info('user_id '.$payment->user_id);
+                    $payment->amount_income = $requestData['amount_crypto'];
 
                     $balance = Balance::where('id', function ($query) use ($payment) {
                         $query->select('balances.id')
@@ -146,17 +143,7 @@ log::info($response);
                             })
                             ->join('balances', 'accounts.id', '=', 'balances.account_id');
                     })->first();
-/*
-                    $balanceId = UserParam::select('balances.id as balance_id')
-                        ->where('user_params.id',$payment->user_id)
-                        ->join('accounts', function ($join) {
-                            $join->on('user_params.id', '=', 'accounts.user_id')
-                                ->where('accounts.type', '=', 'main')
-                                ->on('accounts.fiat_coin', '=', 'user_params.currency_id');
-                        })
-                        ->join('balances', 'accounts.id', '=', 'balances.account_id' )
-                        ->first();
-*/
+
 
                     if(!$balance){
                         throw new \Exception('При пополнении не найден баланс для юзера '.$payment->user_id);
@@ -176,6 +163,7 @@ log::info($response);
 
                     $newAmount = $this->convertTotal(cost: $cost, amount: $requestData['amount_crypto']);
 
+
     log::channel('cryptocloud')->error('currencyCallback->code'  .$currencyCallback->code);
    log::channel('cryptocloud')->error('urrencyIncome->code'  . $currencyIncome->code);
  log::channel('cryptocloud')->error('итог'  .$newAmount);
@@ -186,7 +174,8 @@ log::info($response);
                     else{
                         $balance->amount = $newAmount;
                     }
-
+                    $payment->amount = $newAmount;
+                    $payment->save();
                     $balance->save();
 
                     DB::commit();

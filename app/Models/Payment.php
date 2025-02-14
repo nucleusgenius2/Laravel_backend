@@ -11,6 +11,7 @@ class Payment extends Model
         'invoice_uid',
         'amount',
         'amount_income',
+        'amount_wait',
         'processing',
         'currency_id',
         'currency_income_id',

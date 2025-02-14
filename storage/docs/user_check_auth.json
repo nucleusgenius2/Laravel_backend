@@ -1,0 +1,78 @@
+{
+    "authData": {
+        "summary": "Проверяет авторезирован ли юзер ",
+        "description": "Возвращает информацию о пользователе: его уровне и балансе.",
+        "operationId": "getUserInfo",
+        "tags": ["Authentication"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": "Вход успешен" },
+                                "status": { "type": "string", "example": "success" },
+                                "json": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": { "type": "boolean", "example": true },
+                                        "error": { "type": "string", "nullable": true },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "level": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "user_level": { "type": "integer", "example": 1 },
+                                                        "max_amount": { "type": "string", "example": "499.99" },
+                                                        "full_amount": { "type": "integer", "example": 0 }
+                                                    }
+                                                },
+                                                "balance": { "type": "integer", "example": 0 }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка авторизации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": "Unauthenticated." }
+                            }
+                        }
+                    }
+                }
+            },
+            "400": {
+                "description": "Ошибка при получении данных",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string", "example": "Ошибка при получении данных" },
+                                "status": { "type": "string", "example": "error" },
+                                "json": { "type": "null", "example": null }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

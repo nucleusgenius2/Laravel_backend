@@ -26,9 +26,12 @@ class UserFiatService
 
          $usedCurrencies = array_unique($usedCurrencies);
 
-         $currencies = Countries::select('currencies')->where('code',  $user->params->country)->first();
+         $currencies = Countries::select('currencies')->where('code', $user->params->country)->first();
          if( $currencies ){
              $currenciesArray = json_decode($currencies->currencies, true);
+
+log::info($currenciesArray);
+log::info($usedCurrencies);
 
              //берем доступные для страны валюты, но исключаем те валюты, которые уже использует пользователь
              return new DataArrayDto(status: true, data: array_diff($currenciesArray, $usedCurrencies));

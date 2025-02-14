@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LimitResetPassword extends Model
+class EmailVerifications extends Model
 {
+    public $timestamps = false;
     public $incrementing = false;
     protected $primaryKey = null;
 
     protected $fillable = [
-        'user_email',
-        'code'
+        'user_id',
+        'code',
+        'count',
+        'email'
     ];
 }
-

@@ -92,7 +92,7 @@ class BalanceService
             else{
                 $availableCurrencies =  $dataArrayDto->data;
             }
-
+log::info( $availableCurrencies);
             if ( !in_array($newCurrency->code, $availableCurrencies)) {
                 throw new \Exception('Счет с данной валютой уже есть или валюта недоступна в вашей стране ' . $currency);
             }

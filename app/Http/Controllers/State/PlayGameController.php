@@ -8,11 +8,10 @@ use App\Models\Game;
 use App\Models\PlayGame;
 use App\Services\GameService;
 use App\Services\GenerateUniqueString;
-use App\Services\UserService;
+use App\Services\User\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PlayGameController extends Controller
 {
