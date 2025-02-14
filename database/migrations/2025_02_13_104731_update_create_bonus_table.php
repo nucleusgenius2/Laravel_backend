@@ -13,6 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
+		Schema::dropIfExists('bonus');
+		   
         Schema::create('bonus', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 50);

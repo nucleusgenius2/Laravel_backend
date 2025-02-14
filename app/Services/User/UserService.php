@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use App\DTO\DataEmptyDto;
 use App\Models\Account;
 use App\Models\Balance;
 use App\Models\ConfigWinmove;
@@ -9,12 +10,15 @@ use App\Models\FiatCoin;
 use App\Models\User;
 use App\Models\UserParam;
 use App\Services\GenerateUniqueString;
+use App\Traits\UploadsImages;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class UserService
 {
+    use UploadsImages;
 
     public function createUser(array $data, string $country): array
     {
@@ -271,8 +275,8 @@ class UserService
                 ],
             ];
         }
-        else{
-            return  [
+        else {
+            return [
                 'token' => $token,
                 'user_name' => $user->name,
                 'level' => $this->getUserLevel($user->id),
@@ -291,5 +295,42 @@ class UserService
                 ],
             ];
         }
+    }
+
+    public function updateUser(array $data, User $user): DataEmptyDto
+    {
+        if(empty($data)){
+            return new DataEmptyDto(status: false, error: 'Пустые данные');
+        }
+        else{
+            $userParams = $user->params()->first();
+
+            if(isset($data['name']))
+            {
+                $user->name = $data['name'];
+                $user->save();
+            }
+
+            if(isset($data['avatar'])) {
+                if ($userParams->avatar && $userParams->avatar!==''){
+                    $dataEmptyDto = $this->deleteImage($userParams->avatar);
+                    if( ! $dataEmptyDto->status ){
+                        return new DataEmptyDto(status: false, error: $dataEmptyDto->error);
+                    }
+                }
+
+                $dataStringDto = $this->uploadImage($data['avatar'],'avatars');
+                if ( $dataStringDto->status) {
+                    $userParams->avatar = $dataStringDto->data;
+                    $userParams->save();
+                }
+                else{
+                    return new DataEmptyDto(status: false, error: 'Аватар не был загружен');
+                }
+            }
+
+            return new DataEmptyDto(status: true);
+        }
+
     }
 }

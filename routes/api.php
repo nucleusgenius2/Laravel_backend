@@ -17,6 +17,8 @@ use App\Http\Controllers\State\AdvertController;
 use App\Http\Controllers\State\FiatCoinController;
 use App\Http\Controllers\State\GameStateController;
 use App\Http\Controllers\State\PlayGameController;
+use App\Http\Controllers\State\PlayGameStatController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Websocket\ChatController;
 use App\Http\Controllers\Websocket\WebsocketController;
 use Illuminate\Http\Request;
@@ -42,6 +44,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', [CheckAuthUserController::class, 'index']);
+            Route::patch('/', [UserController::class, 'store']);
 
             Route::get('balance', [BalanceController::class, 'index']);
             Route::post('balance', [BalanceController::class, 'store']);
@@ -73,8 +76,10 @@ Route::prefix('v1')->group(function () {
         Route::get('winner/{id}', [PlayGameController::class, 'show']);
 
         Route::get('winner_test', [PlayGameController::class, 'createTest']);
-
         Route::get('advert', [AdvertController::class, 'index']);
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::get('play_game', [PlayGameStatController::class, 'index']);
+        });
     });
 
     Route::prefix('websocket')->group(function () {

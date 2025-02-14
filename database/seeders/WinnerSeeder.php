@@ -35,7 +35,7 @@ class WinnerSeeder extends Seeder
                     'currency' => $fiat->code,
                 ];
 
-                $userData = $this->service->createUser($data);
+                $userData = $this->service->createUser($data, 'RU');
 
                 $game = Game::create([
                     'gameId' => 1,
@@ -44,8 +44,6 @@ class WinnerSeeder extends Seeder
                     'title' => 'Рога и копыта',
                 ]);
 
-
-                log::info($userData['fullUserData']['user']);
                 PlayGame::create([
                     'gameId' => $game->gameId,
                     'date_play' => Carbon::now(),
@@ -53,6 +51,7 @@ class WinnerSeeder extends Seeder
                     'win' => 1,
                     'ratio' => 1,
                     'user_id' => $userData['fullUserData']['user']->id,
+                    'currency_id' => $userData['fullUserData']['userParam']['currency_id'],
                 ]);
 
                 $data = [
@@ -62,7 +61,7 @@ class WinnerSeeder extends Seeder
                     'currency' => $fiat->code
                 ];
 
-                $userData = $this->service->createUser($data);
+                $userData = $this->service->createUser($data,'RU');
 
                 $game = Game::create([
                     'gameId' => 2,
@@ -78,6 +77,7 @@ class WinnerSeeder extends Seeder
                     'win' => 2,
                     'ratio' => 2,
                     'user_id' => $userData['fullUserData']['user']->id,
+                    'currency_id' => $userData['fullUserData']['userParam']['currency_id'],
                 ]);
 
                 DB::commit();

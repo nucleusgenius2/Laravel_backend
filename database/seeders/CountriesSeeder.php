@@ -67,22 +67,10 @@ class CountriesSeeder extends Seeder
                     'currencies' => json_encode(['EUR', 'BTC', 'USDT', 'BNB'])
                 ],
                 [
-                    'code' => 'RU',
-                    'phone_prefix' => 7,
-                    'title' => 'Russia',
-                    'currencies' => json_encode(['RUB', 'USD', 'BTC', 'USDT'])
-                ],
-                [
                     'code' => 'UA',
                     'phone_prefix' => 380,
                     'title' => 'Ukraine',
                     'currencies' => json_encode(['EUR', 'BTC', 'USDT', 'BNB', 'RUB', 'UAH'])
-                ],
-                [
-                    'code' => 'US',
-                    'phone_prefix' => 1,
-                    'title' => 'USA',
-                    'currencies' => json_encode(['USD'])
                 ],
             ]);
 

@@ -1,0 +1,135 @@
+{
+    "updateUser": {
+        "summary": "Обновление имени и аватара пользователя",
+        "description": "Эндпоинт для обновления имени и аватара пользователя. Пользователь может изменить имя (не более 15 символов) и загрузить новый аватар (форматы png, jpg, jpeg).",
+        "operationId": "updateUser",
+        "tags": [
+            "Profile"
+        ],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "multipart/form-data": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "_method": {
+                                "type": "string",
+                                "example": "PATCH",
+                                "description": "Используется для указания метода PATCH в запросе"
+                            },
+                            "name": {
+                                "type": "string",
+                                "maxLength": 15,
+                                "description": "Имя пользователя (не более 15 символов)"
+                            },
+                            "avatar": {
+                                "type": "string",
+                                "format": "binary",
+                                "description": "Аватар пользователя (файлы формата PNG, JPG, JPEG до 1MB)"
+                            }
+                        },
+                        "required": ["_method", "name"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Успешное обновление пользователя",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "null"
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизованный доступ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации данных",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                },
+                                "message": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The name field must not be greater than 15 characters."
+                                            }
+                                        }
+                                    }
+                                },
+                                "json": {
+                                    "type": "array",
+                                    "example": []
+                                }
+                            }
+                        },
+                        "example": {
+                            "status": "error",
+                            "message": {
+                                "name": [
+                                    "The name field must not be greater than 15 characters."
+                                ]
+                            },
+                            "json": []
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

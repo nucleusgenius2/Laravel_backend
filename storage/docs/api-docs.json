@@ -170,12 +170,21 @@
             }
         },
 
-        "/api/v1/user/": {
+        "/api/v1/user": {
             "get": {
                 "$ref": "./user_check_auth.json#/authData",
                 "tags": ["Authentication"]
+            },
+            "post": {
+                "$ref": "./user.json#/updateUser",
+                "tags": ["Profile"]
+            }
+        },
+        "/api/v1/stat/play_game": {
+            "get": {
+                "$ref": "./game_stat.json#/gameData",
+                "tags": ["Profile"]
             }
         }
-
     }
 }

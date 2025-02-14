@@ -1,0 +1,71 @@
+{
+    "gameData":  {
+        "summary": "Получение статистики игр пользователя",
+        "description": "Возвращает общее количество игр, общую сумму выиграшей и сумму самого большого выигрыша. Выборка игр идет только в текущей валюте пользователя. ",
+        "tags": ["Profile"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "success"
+                                },
+                                "json": {
+                                    "type": "object",
+                                    "properties": {
+                                        "total_count": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "total_win": {
+                                            "type": "string",
+                                            "example": "3"
+                                        },
+                                        "max_win": {
+                                            "type": "string",
+                                            "example": "2"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка авторизации",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
