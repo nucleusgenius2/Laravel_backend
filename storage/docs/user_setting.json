@@ -1,0 +1,81 @@
+{
+    "updateSetting":{
+        "summary": "Обновить настройки пользователя",
+        "description": "Позволяет обновить настройки пользователя, связанные с конфиденциальностью имени и статистики.",
+        "tags": ["Profile"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "cfg_hidden_name": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "example": 1,
+                                "description": "Скрыть имя пользователя (0 - нет, 1 - да)"
+                            },
+                            "cfg_hidden_stat": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "example": 0,
+                                "description": "Скрыть статистику пользователя (0 - нет, 1 - да)"
+                            }
+                        },
+                        "required": ["cfg_hidden_name", "cfg_hidden_stat"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Настройки успешно обновлены",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": null
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка аутентификации",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "data": {
+                                "status": "error",
+                                "message": {
+                                    "cfg_hidden_name": [
+                                        "The cfg hidden name field must not be greater than 1."
+                                    ]
+                                },
+                                "json": []
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

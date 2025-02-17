@@ -185,6 +185,22 @@
                 "$ref": "./game_stat.json#/gameData",
                 "tags": ["Profile"]
             }
+        },
+
+        "/api/v1/user/sessions_history": {
+            "get": {
+                "$ref": "./sessions_history.json#/getSessionHistory",
+                "tags": ["Profile"]
+            }
+        },
+
+        "/api/v1/user/setting": {
+            "patch": {
+                "$ref": "./user_setting.json#/updateSetting",
+                "tags": ["Profile"]
+            }
         }
+
+
     }
 }

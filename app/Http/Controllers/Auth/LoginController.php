@@ -7,15 +7,16 @@ use App\Events\WinnersWebsocketSend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use App\Services\User\LoginService;
 use App\Services\User\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    protected UserService $service;
+    protected LoginService $service;
 
-    public function __construct(UserService $service)
+    public function __construct(LoginService $service)
     {
         $this->service = $service;
     }
@@ -24,36 +25,17 @@ class LoginController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::select('users.*', 'user_params.*','fiat_coin.code as main_currency',)
-            ->join('user_params', 'users.id', '=', 'user_params.id')
-            ->join('fiat_coin', 'fiat_coin.id', '=', 'user_params.currency_id')
-            ->where('users.email', $data['email'])
-            ->first();
+        $dataArrayDto = $this->service->login(data: $data, request: $request);
 
-
-        if ($user) {
-            if (Hash::check($data['password'], $user->password)) {
-                $token = $user->createToken('token', ['permission:user'])->plainTextToken;
-
-                $userData = $this->service->returnAuthData(user: $user, token: $token);
-
-                $this->status = 'success';
-                $this->code = 200;
-                $this->dataJson = $userData;
-                $this->message = 'Вход успешен';
-
-                event(new UserLogin(user: $user, request: $request));
-            } else {
-                $this->message = [
-                    'password' => ['Пароль не совпадает'],
-                ];
-                $this->code = 400;
-            }
-        } else {
-            $this->code = 400;
-            $this->message = [
-                'email' => ['Email не найден'],
-            ];
+        if($dataArrayDto->status){
+            $this->status = 'success';
+            $this->code = 200;
+            $this->dataJson = $dataArrayDto->data;
+            $this->message = 'Вход успешен';
+        }
+        else{
+            $this->code = $dataArrayDto->code ?? 400;
+            $this->message = $dataArrayDto->data;
         }
 
         return $this->responseJsonApi();

@@ -56,10 +56,6 @@
                                 "message": {
                                     "type": "string",
                                     "example": "Unauthorized"
-                                },
-                                "status": {
-                                    "type": "string",
-                                    "example": "error"
                                 }
                             }
                         }

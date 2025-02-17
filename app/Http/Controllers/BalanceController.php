@@ -41,7 +41,7 @@ class BalanceController extends Controller
             $this->code = 200;
         }
         else{
-            $this->code = 500;
+            $this->code = 400;
             $this->message = $dataEmptyDto->error;
         }
 

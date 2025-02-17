@@ -10,10 +10,12 @@ readonly class DataArrayDto
 
     public ?array $data;
 
-    public function __construct(bool $status, ?string $error=null, ?array $data=null)
+    public ?int $code;
+    public function __construct(bool $status, ?string $error=null, ?array $data=null, ?int $code=null)
     {
         $this->status = $status;
         $this->error = $error;
         $this->data = $data;
+        $this->code = $code;
     }
 }

@@ -45,7 +45,7 @@ class ChangeEmailController extends Controller
             $this->code = 200;
         }
         else {
-            $this->code = 400;
+            $this->code = $dataEmptyDto->code ?? 400;
             $this->message = $dataEmptyDto->error;
         }
 

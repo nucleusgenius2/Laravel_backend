@@ -20,19 +20,14 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->user()->cannot('update', $user)) {
-            $this->code = 403;
-        }
-        else {
-            $dataEmptyDto = $this->service->updateUser(data: $data, user: $request->user());
+        $dataEmptyDto = $this->service->updateUser(data: $data, user: $request->user());
 
-            if ($dataEmptyDto->status) {
-                $this->status = 'success';
-                $this->code = 200;
-            } else {
-                $this->code = 400;
-                $this->message = $dataEmptyDto->error;
-            }
+        if ($dataEmptyDto->status) {
+            $this->status = 'success';
+            $this->code = 200;
+        } else {
+            $this->code = $dataEmptyDto->code ?? 400;
+            $this->message = $dataEmptyDto->error;
         }
 
         return $this->responseJsonApi();

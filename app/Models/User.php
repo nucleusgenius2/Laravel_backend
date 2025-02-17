@@ -29,6 +29,7 @@ class User extends Authenticatable
         'created_at',
         'provider_id',
         'provider_type',
+        'uuid'
     ];
 
     protected $casts = [

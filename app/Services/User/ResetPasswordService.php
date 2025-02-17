@@ -15,14 +15,14 @@ class ResetPasswordService
          $user = User::where('email', $email)->first();
 
          if(!$user){
-             return new DataEmptyDto(status: false, error: 'Пользователь не найден');
+             return new DataEmptyDto(status: false, error: 'Пользователь не найден', code: 404);
          }
 
          $limit = LimitResetPassword::where('user_email', '=', $user->email)->first();
 
          if ( $limit ) {
              if ($limit->updated_at > Carbon::now()->subHour()) {
-                 return new DataEmptyDto(status: false, error: 'Восстановление пароля 1 раз в час');
+                 return new DataEmptyDto(status: false, error: 'Восстановление пароля 1 раз в час', code: 400);
              }
              else{
                  $this->sendMessageResetPassword(user: $user);
@@ -67,7 +67,7 @@ class ResetPasswordService
             return new DataEmptyDto(status: true);
         }
         else{
-            return new DataEmptyDto(status: false, error: 'Юзер не найден');
+            return new DataEmptyDto(status: false, error: 'Юзер не найден', code: 404);
         }
     }
 

@@ -10,10 +10,13 @@ readonly class DataStringDto
 
     public ?string $data;
 
-    public function __construct(bool $status, ?string $error=null, ?string $data=null)
+    public ?int $code;
+
+    public function __construct(bool $status, ?string $error=null, ?string $data=null, ?int $code=null)
     {
         $this->status = $status;
         $this->error = $error;
         $this->data = $data;
+        $this->code = $code;
     }
 }

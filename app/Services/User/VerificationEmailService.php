@@ -66,11 +66,11 @@ class VerificationEmailService
 
                 return new DataEmptyDto(status: true);
             } catch (\Exception $e) {
-                return new DataEmptyDto(status: false, error: $e);
+                return new DataEmptyDto(status: false, error: $e, code: 500);
             }
         }
         else{
-            return new DataEmptyDto(status: false, error: 'Код не верен');
+            return new DataEmptyDto(status: false, error: 'Код не верен', code: 400);
         }
     }
 }

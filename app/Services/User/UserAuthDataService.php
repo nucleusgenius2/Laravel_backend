@@ -31,6 +31,7 @@ class UserAuthDataService
                 'level' => $this->service->getUserLevel(userId: $user->id),
                 'balance' => $this->service->getMainBalance($user->id),
                 'main_currency' => $userParams->code,
+                'uuid' => $user->uuid,
             ];
 
             return new DataArrayDto(status: true, data: $data);

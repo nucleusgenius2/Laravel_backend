@@ -1,6 +1,6 @@
 {
     "authData": {
-        "summary": "Проверяет авторезирован ли юзер ",
+        "summary": "Проверяет авторизацию пользователя ",
         "description": "Возвращает информацию о пользователе: его уровне и балансе.",
         "operationId": "getUserInfo",
         "tags": ["Authentication"],

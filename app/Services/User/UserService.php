@@ -5,8 +5,10 @@ namespace App\Services\User;
 use App\DTO\DataEmptyDto;
 use App\Models\Account;
 use App\Models\Balance;
+use App\Models\Bonus;
 use App\Models\ConfigWinmove;
 use App\Models\FiatCoin;
+use App\Models\FsBalance;
 use App\Models\User;
 use App\Models\UserParam;
 use App\Services\GenerateUniqueString;
@@ -27,7 +29,9 @@ class UserService
             $userData = [
                 'name' => GenerateUniqueString::generateName(10),
                 'created_at' => Carbon::now(),
-                'password' => $data['password'] ?? Str::random()
+                'password' => $data['password'] ?? Str::random(),
+                'uuid' => $this->generateUniqueCode()
+
             ];
             if (isset($data['email'])){
                 $userData['email'] = $data['email'];
@@ -110,6 +114,7 @@ class UserService
 
             if ($bonusConfig->is_active) {
 
+                /*
                 $accountFsbonus = Account::create([
                     'user_id' => $user->id,
                     'type' => 'fsbonus',
@@ -121,6 +126,18 @@ class UserService
                     'account_id' => $accountFsbonus->id,
                     'count' => $bonusConfig->val,
                 ];
+                */
+
+                $registrationBonus = Bonus::where('type', 'reg_bonus')->first();
+                if($registrationBonus) {
+                    FsBalance::create([
+                        'user_id' => $user->id,
+                        'type' => 'reg_bonus',
+                        'to_date' => Carbon::now()->addHour($registrationBonus->valid) ,
+                        'count' =>  $registrationBonus->bonus_count,
+                        'nominal' =>  $registrationBonus->bonus_nominal ?? 0,
+                    ]);
+                }
 
             }
 
@@ -216,6 +233,19 @@ class UserService
         }
     }
 
+    /**
+     * Создаем уникальный uuid юзеру
+     * @return string
+     */
+    function generateUniqueCode(): string
+    {
+        do {
+            $uuid = str_pad(mt_rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+        } while (User::where('uuid', $uuid)->exists());
+
+        return $uuid;
+    }
+
 
     public function getUserLevel(int $userId): array|null
     {
@@ -259,6 +289,7 @@ class UserService
             return  [
                 'token' => $token,
                 'user_name' => $user->name,
+                'uuid' => $user->uuid,
                 'level' => $this->getUserLevel($user->id),
                 'main_currency' => $user->main_currency,
                 'balance' => $this->getMainBalance($user->id),
@@ -279,6 +310,7 @@ class UserService
             return [
                 'token' => $token,
                 'user_name' => $user->name,
+                'uuid' => $user->uuid,
                 'level' => $this->getUserLevel($user->id),
                 'main_currency' => $user->main_currency,
                 'balance' => $this->getMainBalance($user->id),
@@ -299,6 +331,11 @@ class UserService
 
     public function updateUser(array $data, User $user): DataEmptyDto
     {
+        if ( $user->cannot('update', $user)) {
+            return new DataEmptyDto(status: false, code: 403);
+        }
+
+
         if(empty($data)){
             return new DataEmptyDto(status: false, error: 'Пустые данные');
         }
@@ -315,7 +352,7 @@ class UserService
                 if ($userParams->avatar && $userParams->avatar!==''){
                     $dataEmptyDto = $this->deleteImage($userParams->avatar);
                     if( ! $dataEmptyDto->status ){
-                        return new DataEmptyDto(status: false, error: $dataEmptyDto->error);
+                        return new DataEmptyDto(status: false, error: $dataEmptyDto->error, code: 500);
                     }
                 }
 
@@ -325,7 +362,7 @@ class UserService
                     $userParams->save();
                 }
                 else{
-                    return new DataEmptyDto(status: false, error: 'Аватар не был загружен');
+                    return new DataEmptyDto(status: false, error: 'Аватар не был загружен', code: 400);
                 }
             }
 

@@ -1,0 +1,85 @@
+{
+    "getSessionHistory": {
+        "summary": "Получить историю сессий пользователя",
+        "description": "Возвращает историю сессий пользователя с пагинацией.",
+        "tags": [
+            "Profile"
+        ],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "page",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "description": "Номер страницы"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": {
+                                "current_page": 1,
+                                "data": [
+                                    {
+                                        "id": 2,
+                                        "browser": "Chrome",
+                                        "region": " ",
+                                        "ip": "172.22.0.1",
+                                        "date": "2025-02-15 19:05:01",
+                                        "user_id": 1
+                                    }
+                                ],
+                                "first_page_url": "http://localhost/api/v1/user/sessions_history?page=1",
+                                "last_page_url": "http://localhost/api/v1/user/sessions_history?page=1",
+                                "next_page_url": null,
+                                "prev_page_url": null,
+                                "total": 5
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Ошибка аутентификации",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthorized"
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "data": {
+                                "status": "error",
+                                "message": {
+                                    "page": [
+                                        "The page field is required."
+                                    ]
+                                },
+                                "json": []
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
