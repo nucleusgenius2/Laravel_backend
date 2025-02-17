@@ -39,8 +39,9 @@ class BalanceService
             'fiat_coin.img as currency_img',
             'fiat_coin.code as currency_code',
             'fiat_coin.id as currency_id',
+            'fiat_coin.type as currency_type',
         )
-            ->where('accounts.user_id', $user->id)
+            ->where([['accounts.user_id', $user->id],['accounts.type', '!=', 'fsbonus']])
             ->rightJoin('balances', 'accounts.id', '=', 'balances.account_id')
             ->join('fiat_coin', 'accounts.fiat_coin', '=', 'fiat_coin.id')
             ->get();
@@ -56,17 +57,24 @@ class BalanceService
                 'name' => $item->currency_name,
                 'img'  => $item->currency_img,
                 'code' => $item->currency_code,
+                'type' => $item->currency_type,
             ];
 
             if(!isset($item->to_date)){ unset($item->to_date); }
             if(!isset($item->nominal)){ unset($item->nominal); }
             if($item->count ==='0.00'){ unset($item->count); }
 
-            // Убираем ненужные поля
+            //показать счет с mintwin только для главной валюты
+            if( $item->type==="mintwin"){
+                if ($item->currency_id !==$mainCurrencyId->currency_id){
+                    return null;
+                }
+            }
+
             unset($item->currency_name, $item->currency_img, $item->currency_code, $item->currency_id);
 
             return $item;
-        });
+        })->filter()->values();
 
         return $balance;
 
@@ -92,7 +100,7 @@ class BalanceService
             else{
                 $availableCurrencies =  $dataArrayDto->data;
             }
-log::info( $availableCurrencies);
+
             if ( !in_array($newCurrency->code, $availableCurrencies)) {
                 throw new \Exception('Счет с данной валютой уже есть или валюта недоступна в вашей стране ' . $currency);
             }

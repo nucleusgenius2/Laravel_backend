@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Events\ChatMessageSent;
-use App\Listeners\WebsocketChatMessageSent;
+use App\Events\ChatMessageWebsocketSend;
+use App\Listeners\WebsocketListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Websocket;
 
 use App\DTO\WebsocketDto;
-use App\Events\ChatMessageSent;
+use App\Events\ChatMessageWebsocketSend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChatRequest;
 use App\Http\Requests\CountRequest;

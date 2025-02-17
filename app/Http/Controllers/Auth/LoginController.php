@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserLogin;
+use App\Events\WinnersWebsocketSend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
@@ -28,6 +30,7 @@ class LoginController extends Controller
             ->where('users.email', $data['email'])
             ->first();
 
+
         if ($user) {
             if (Hash::check($data['password'], $user->password)) {
                 $token = $user->createToken('token', ['permission:user'])->plainTextToken;
@@ -36,8 +39,10 @@ class LoginController extends Controller
 
                 $this->status = 'success';
                 $this->code = 200;
-                $this->dataJson = $userData ;
+                $this->dataJson = $userData;
                 $this->message = 'Вход успешен';
+
+                event(new UserLogin(user: $user, request: $request));
             } else {
                 $this->message = [
                     'password' => ['Пароль не совпадает'],

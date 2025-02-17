@@ -13,6 +13,8 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Payments\CryptoCloudWalletController;
 use App\Http\Controllers\Profile\ChangeEmailController;
+use App\Http\Controllers\Profile\UserSessionController;
+use App\Http\Controllers\Profile\UserSettingController;
 use App\Http\Controllers\State\AdvertController;
 use App\Http\Controllers\State\FiatCoinController;
 use App\Http\Controllers\State\GameStateController;
@@ -54,6 +56,11 @@ Route::prefix('v1')->group(function () {
 
             Route::get('change_email', [ChangeEmailController::class, 'changeEmail']);
             Route::patch('change_email', [ChangeEmailController::class, 'verificationEmail']);
+
+            Route::get('sessions_history', [UserSessionController::class, 'index']);
+            Route::patch('setting', [UserSettingController::class, 'store']);
+
+
         });
 
         Route::post('auth', [LoginController::class, 'login']);

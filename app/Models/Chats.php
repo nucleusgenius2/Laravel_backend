@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\DTO\WebsocketDto;
-use App\Events\ChatMessageSent;
+use App\Events\ChatMessageWebsocketSend;
 use App\Events\NotificationsWebsocketSend;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +32,7 @@ class Chats extends Model
 
             $WebsocketDto = new WebsocketDto(userId: $chatMessage->user, userName: Auth::user()->name,  data: $chatMessage->content);
 
-            event(new ChatMessageSent($WebsocketDto));
+            event(new ChatMessageWebsocketSend($WebsocketDto));
         });
     }
 }

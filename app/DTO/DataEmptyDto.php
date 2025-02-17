@@ -8,9 +8,12 @@ readonly class DataEmptyDto
 
     public ?string $error;
 
-    public function __construct(bool $status, ?string $error=null)
+    public ?int $code;
+
+    public function __construct(bool $status, ?string $error=null, ?int $code=null)
     {
         $this->status = $status;
         $this->error = $error;
+        $this->code = $code;
     }
 }
