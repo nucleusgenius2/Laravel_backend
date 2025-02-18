@@ -21,6 +21,22 @@ class UserSettingService
         if(isset($data['cfg_hidden_stat'])){
             $userParams->cfg_hidden_stat = $data['cfg_hidden_stat'];
         }
+        if(isset($data['cfg_sound'])){
+            $userParams->cfg_sound = $data['cfg_sound'];
+        }
+        if(isset($data['cfg_music'])){
+            $userParams->cfg_music = $data['cfg_music'];
+        }
+        if(isset($data['cfg_effect'])){
+            $userParams->cfg_effect = $data['cfg_effect'];
+        }
+        if(isset($data['cfg_hidden_game'])){
+            $userParams->cfg_hidden_game = $data['cfg_hidden_game'];
+        }
+        if(isset($data['cfg_animation'])){
+            $userParams->cfg_animation = $data['cfg_animation'];
+        }
+
         $userParams->save();
 
         return new DataEmptyDto(status: true);

@@ -10,9 +10,6 @@ class Balance extends Model
 
     protected $fillable = [
         'amount',
-        'to_date',
-        'count',
-        'nominal',
         'account_id'
     ];
 }

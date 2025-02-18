@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\State;
 
 use App\DTO\DataArrayDto;
+use App\DTO\DataObjectDto;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Countries;
@@ -57,12 +58,12 @@ class FiatCoinController extends Controller
     {
         $user = Auth::user();
 
-        $dataArrayDto = $this->service->getUserCurrencies(user: $user);
+        $dataObjectDto = $this->service->getUserCurrenciesFullData(user: $user);
 
-        if( $dataArrayDto->status){
+        if( $dataObjectDto->status){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $dataArrayDto->data;
+            $this->dataJson = $dataObjectDto->data;
         } else{
             $this->code = 500;
         }

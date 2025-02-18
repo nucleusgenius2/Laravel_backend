@@ -30,8 +30,6 @@ class UserFiatService
          if( $currencies ){
              $currenciesArray = json_decode($currencies->currencies, true);
 
-log::info($currenciesArray);
-log::info($usedCurrencies);
 
              //берем доступные для страны валюты, но исключаем те валюты, которые уже использует пользователь
              return new DataArrayDto(status: true, data: array_diff($currenciesArray, $usedCurrencies));
@@ -40,6 +38,25 @@ log::info($usedCurrencies);
              return new DataArrayDto(status: false);
          }
      }
+
+    /**
+     * Возвращаем список доступных валют для создания нового счета у пользователя с полной информацией о валютах
+     * @param User $user
+     * @return DataObjectDto
+     */
+    public function getUserCurrenciesFullData(User $user): DataObjectDto
+    {
+        $dataArrayDto = $this->getUserCurrencies(user: $user);
+        if($dataArrayDto->status){
+            if (!empty($dataArrayDto->data)) {
+                $fiatCoins = FiatCoin::select('code', 'name')->whereIn('code', $dataArrayDto->data)->get();
+
+                return new DataObjectDto(status: true, data: $fiatCoins);
+            }
+            return new DataObjectDto(status: false, error: 'Нет доступных валют', code: 400);
+        }
+        return new DataObjectDto(status: false, code: 500);
+    }
 
     public function getCurrencies(): DataObjectDto
     {

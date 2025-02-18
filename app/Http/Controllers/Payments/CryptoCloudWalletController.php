@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Payments;
 
-use App\DTO\DataStringDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CryptoCloudRequest;
-use App\Models\Countries;
-use App\Models\UserParam;
 use App\Services\Payments\CryptoCloudWalletService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -21,7 +19,7 @@ class CryptoCloudWalletController extends Controller
         $this->service = $service;
     }
 
-    public function createPayment(CryptoCloudRequest $request)
+    public function createPayment(CryptoCloudRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -45,13 +43,13 @@ class CryptoCloudWalletController extends Controller
 
     public function callback(Request $request)
     {
-        $invoice = $this->service->collback(requestData: $request->all());
+        $this->service->collback(requestData: $request->all());
 
         log::info('колбек валлет');
         log::info($request->all());
 
-        $this->code = 200;
-        return response()->json();
+        //$this->code = 200;
+        //return response()->json();
     }
 
 }

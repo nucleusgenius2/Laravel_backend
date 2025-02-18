@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\DTO\DataEmptyDto;
-use App\DTO\DataObjectDTO;
+use App\DTO\DataObjectDto;
 use App\Models\Account;
 use App\Models\Balance;
 use App\Models\Countries;
 use App\Models\FiatCoin;
+use App\Models\FsBalance;
 use App\Models\User;
 use App\Models\UserParam;
 use App\Traits\CurrencyRateProvider;
@@ -31,10 +32,6 @@ class BalanceService
         $balance = Account::select(
             'accounts.type',
             'balances.amount',
-            'balances.to_date',
-            'balances.count',
-            'balances.count',
-            'balances.nominal',
             'fiat_coin.name as currency_name',
             'fiat_coin.img as currency_img',
             'fiat_coin.code as currency_code',
@@ -60,10 +57,6 @@ class BalanceService
                 'type' => $item->currency_type,
             ];
 
-            if(!isset($item->to_date)){ unset($item->to_date); }
-            if(!isset($item->nominal)){ unset($item->nominal); }
-            if($item->count ==='0.00'){ unset($item->count); }
-
             //показать счет с mintwin только для главной валюты
             if( $item->type==="mintwin"){
                 if ($item->currency_id !==$mainCurrencyId->currency_id){
@@ -78,6 +71,21 @@ class BalanceService
 
         return $balance;
 
+    }
+
+    public function getBalanceFs(User $user): DataObjectDto
+    {
+        $data = FsBalance::select(
+            'fs_balances.count',
+            'fs_balances.nominal',
+            'fs_balances.to_date',
+            'bonus.name'
+        )
+            ->where('user_id', $user->id)
+            ->join('bonus', 'bonus.id', '=', 'fs_balances.bonus_id')
+            ->get();
+
+        return new DataObjectDto(status: true, data: $data);
     }
 
 
@@ -119,8 +127,8 @@ class BalanceService
             ]);
 
             $balance = [
-                ['amount' => 0, 'account_id' => $accountMain->id,'count' => 0 ],
-                ['amount' => 0, 'account_id' => $accountMintwin->id,'count' => 0],
+                ['amount' => 0, 'account_id' => $accountMain->id ],
+                ['amount' => 0, 'account_id' => $accountMintwin->id],
             ];
 
             Balance::insert($balance);

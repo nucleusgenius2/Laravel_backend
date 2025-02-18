@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\DataEmptyDto;
 use App\Http\Requests\BalanceRequest;
 use App\Models\Account;
 use App\Services\BalanceService;
@@ -29,6 +30,18 @@ class BalanceController extends Controller
 
         return $this->responseJsonApi();
     }
+
+    public function index_fs(Request $request): JsonResponse
+    {
+        $dataEmptyDto = $this->service->getBalanceFs(user: $request->user());
+
+        $this->status = 'success';
+        $this->code = 200;
+        $this->dataJson = $dataEmptyDto->data;
+
+        return $this->responseJsonApi();
+    }
+
 
     public function store(BalanceRequest $request): JsonResponse
     {

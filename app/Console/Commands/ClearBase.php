@@ -32,14 +32,14 @@ class ClearBase extends Command
             return 1;
         }
 
-        $tables = ['users', 'user_params', 'accounts', 'balances', 'config_winmove', 'fiat_coin', 'countries'];
+        $tables = ['users', 'user_params', 'accounts', 'balances', 'config_winmove', 'fs_balances', 'bonus'];
 
         foreach ($tables as $table) {
             DB::table($table)->truncate();
             $this->info("Таблица {$table} очищена.");
         }
 
-        $this->info('таблицы users user_params accounts balances fiat_coin countries очищены');
+        $this->info('таблицы users user_params accounts balances fs_balances bonus очищены');
 
         return 0;
     }

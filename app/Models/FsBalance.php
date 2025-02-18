@@ -13,7 +13,8 @@ class FsBalance extends Model
         'nominal',
         'to_date',
         'user_id',
-        'type'
+        'type',
+        'bonus_id'
     ];
 }
 

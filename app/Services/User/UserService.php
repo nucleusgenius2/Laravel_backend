@@ -107,28 +107,14 @@ class UserService
             $bonusConfig = ConfigWinmove::where('param', 'reg_bonus')->first();
 
             $balance = [
-                ['amount' => 0, 'account_id' => $accountMain->id,'count' => 0 ],
-                ['amount' => 0, 'account_id' => $accountBonus->id, 'count' => 0 ],
-                ['amount' => 0, 'account_id' => $accountMintwin->id,'count' => 0],
+                ['amount' => 0, 'account_id' => $accountMain->id],
+                ['amount' => 0, 'account_id' => $accountBonus->id],
+                ['amount' => 0, 'account_id' => $accountMintwin->id],
             ];
 
             if ($bonusConfig->is_active) {
 
-                /*
-                $accountFsbonus = Account::create([
-                    'user_id' => $user->id,
-                    'type' => 'fsbonus',
-                    'fiat_coin' => $fiat->id
-                ]);
-
-                $balance[] = [
-                    'amount' => 0,
-                    'account_id' => $accountFsbonus->id,
-                    'count' => $bonusConfig->val,
-                ];
-                */
-
-                $registrationBonus = Bonus::where('type', 'reg_bonus')->first();
+                $registrationBonus = Bonus::where([['type', 'reg_bonus'],['status', '1']])->first();
                 if($registrationBonus) {
                     FsBalance::create([
                         'user_id' => $user->id,
@@ -136,6 +122,7 @@ class UserService
                         'to_date' => Carbon::now()->addHour($registrationBonus->valid) ,
                         'count' =>  $registrationBonus->bonus_count,
                         'nominal' =>  $registrationBonus->bonus_nominal ?? 0,
+                        'bonus_id' => $registrationBonus->id,
                     ]);
                 }
 

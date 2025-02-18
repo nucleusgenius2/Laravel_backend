@@ -26,6 +26,11 @@ class UserSettingRequest extends FormRequest
         return [
             'cfg_hidden_name' => 'int|min:0|max:1',
             'cfg_hidden_stat' => 'int|min:0|max:1',
+            'cfg_sound' => 'int|min:0|max:1',
+            'cfg_music' => 'int|min:0|max:100',
+            'cfg_effect' => 'int|min:0|max:100',
+            'cfg_hidden_game' => 'int|min:0|max:1',
+            'cfg_animation' => 'int|min:0|max:1',
         ];
     }
 

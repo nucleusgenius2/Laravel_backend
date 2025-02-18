@@ -94,7 +94,7 @@ log::info($response);
 
     }
 
-    public function collback(array $requestData)
+    public function collback(array $requestData): void
     {
         $validated = Validator::make($requestData, [
             'status' => 'required|string|in:success,error',
