@@ -2,12 +2,29 @@
 
 namespace App\Services;
 
+use App\DTO\DataObjectDto;
 use App\Models\PlayGame;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class GameService
 {
+    public function getPlayGameData(array $data, User $user): DataObjectDto
+    {
+        $playGames = PlayGame::select(
+            'play_game.date_play',
+            'play_game.win',
+            'play_game.bet',
+            'play_game.ration',
+        )
+            ->where([['user_id', $user->id],['gameId', $data['game_id']]])
+            ->paginate($data['count'], ['*'], 'page',  $data['page']);
+
+        return new DataObjectDto(status: 200, data: $playGames);
+    }
+
+
     public function getTableWinner(int $count): Collection
     {
         $winners = PlayGame::select(

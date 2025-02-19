@@ -38,6 +38,13 @@
             }
         },
 
+        "/api/v1/user/balance_fs": {
+            "get": {
+                "$ref": "./balance.json#/getfsBalance",
+                "tags": ["Balance"]
+            }
+        },
+
         "/api/v1/user/currencies_user": {
             "get": {
                 "$ref": "./balance.json#/getUserCurrencies",
@@ -148,6 +155,20 @@
                 "tags": ["Payment"]
             }
         },
+
+        "/api/v1/payment": {
+            "get": {
+                "$ref": "./payment.json#/getPayments",
+                "tags": ["Payment"]
+            }
+        },
+        "/api/v1/payment/withdrawals": {
+            "get": {
+                "$ref": "./wthdrawal.json#/getWthdrawals",
+                "tags": ["Payment"]
+            }
+        },
+
 
         "/api/v1/user/reset_password": {
             "post": {

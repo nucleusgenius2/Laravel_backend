@@ -12,6 +12,8 @@ use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Payments\CryptoCloudWalletController;
+use App\Http\Controllers\Payments\PaymentController;
+use App\Http\Controllers\Payments\WithdrawalsController;
 use App\Http\Controllers\Profile\ChangeEmailController;
 use App\Http\Controllers\Profile\UserSessionController;
 use App\Http\Controllers\Profile\UserSettingController;
@@ -51,6 +53,7 @@ Route::prefix('v1')->group(function () {
             Route::get('balance', [BalanceController::class, 'index']);
             Route::post('balance', [BalanceController::class, 'store']);
             Route::post('default_balance', [BalanceController::class, 'setDefault']);
+            Route::get('balance_fs', [BalanceController::class, 'index_fs']);
 
             Route::get('currencies_user', [FiatCoinController::class, 'getFiatUser']);
 
@@ -107,9 +110,13 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware(['auth:sanctum'])->group(function () {
             //Route::get('/pay_crypto', [CryptoCloudController::class, 'createPayment']);
+            Route::get('/', [PaymentController::class, 'index']);
+            Route::get('withdrawals', [WithdrawalsController::class, 'index']);
+
             Route::get('/pay_crypto', [CryptoCloudWalletController::class, 'createPayment']);
 
         });
+
 
         Route::post('/cryptocloud/callback', [CryptoCloudWalletController::class, 'callback']);
     });

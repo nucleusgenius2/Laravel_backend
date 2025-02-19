@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\State;
 
+use App\DTO\DataObjectDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CountRequest;
+use App\Http\Requests\PlayGameRequest;
 use App\Models\Game;
 use App\Models\PlayGame;
 use App\Services\GameService;
@@ -20,6 +22,21 @@ class PlayGameController extends Controller
     public function __construct(GameService $service){
         $this->service = $service;
     }
+
+
+    public function index(PlayGameRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        $dataObjectDto = $this->service->getPlayGameData(data: $data, user: $request->user() );
+
+        $this->status = 'success';
+        $this->code = 200;
+        $this->dataJson = $dataObjectDto->data ;
+
+        return $this->responseJsonApi();
+    }
+
 
     public function indexTable(CountRequest $request): JsonResponse
     {

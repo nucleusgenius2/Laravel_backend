@@ -1,0 +1,59 @@
+{
+    "getPayments":  {
+        "summary": "Получение списка платежей пользователя",
+        "description": "Возвращает список платежей пользователя с их данными.",
+        "tags": ["Payment"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": [
+                                {
+                                    "amount_income": "0.100000000000",
+                                    "currency_id": 6,
+                                    "status": "success",
+                                    "date_start": "2025-02-12 10:56:31",
+                                    "date_completion": "2025-02-12 11:00:04",
+                                    "processing": "crypto_cloud_wallet",
+                                    "bonus_amount": null,
+                                    "code": "BNB",
+                                    "date": "2025-02-12"
+                                },
+                                {
+                                    "amount_income": null,
+                                    "currency_id": 6,
+                                    "status": "not_paid",
+                                    "date_start": "2025-02-12 11:00:55",
+                                    "date_completion": null,
+                                    "processing": "crypto_cloud_wallet",
+                                    "bonus_amount": null,
+                                    "code": "BNB",
+                                    "date": "2025-02-12"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизован",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -19,25 +19,38 @@
                             "json": [
                                 {
                                     "type": "main",
-                                    "amount": "0.00",
-                                    "default": false,
+                                    "amount": "0.000000000000",
+                                    "currency_type": "fiat",
+                                    "default": true,
                                     "currency": {
                                         "name": "Russian Ruble",
                                         "img": "",
-                                        "code": "RUB"
+                                        "code": "RUB",
+                                        "type": "fiat"
                                     }
                                 },
                                 {
                                     "type": "bonus",
-                                    "amount": "1.00",
-                                    "count": "1.00",
+                                    "amount": "0.000000000000",
+                                    "currency_type": "fiat",
                                     "default": true,
-                                    "to_date": "2025-12-31",
-                                    "nominal": "пока что не известно как будет выглядеть",
                                     "currency": {
                                         "name": "Russian Ruble",
                                         "img": "",
-                                        "code": "RUB"
+                                        "code": "RUB",
+                                        "type": "fiat"
+                                    }
+                                },
+                                {
+                                    "type": "mintwin",
+                                    "amount": "0.000000000000",
+                                    "currency_type": "fiat",
+                                    "default": true,
+                                    "currency": {
+                                        "name": "Russian Ruble",
+                                        "img": "",
+                                        "code": "RUB",
+                                        "type": "fiat"
                                     }
                                 }
                             ]
@@ -50,8 +63,7 @@
                 "content": {
                     "application/json": {
                         "example": {
-                            "message": "Unauthenticated.",
-                            "status": "error"
+                            "message": "Unauthenticated."
                         }
                     }
                 }
@@ -286,6 +298,47 @@
                                     "example": "error"
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "getfsBalance": {
+        "summary": "Получение списка бонусных балансов пользователя",
+        "description": "Возвращает список доступных FS-балансов пользователя.",
+        "tags": ["Balance"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": [
+                                {
+                                    "count": 100,
+                                    "nominal": "0.00",
+                                    "to_date": "2025-02-18 18:46:10",
+                                    "name": "100 FS ЗА РЕГИСТРАЦИЮ"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизован",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
                         }
                     }
                 }
