@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\DataEmptyDto;
 use App\DTO\DataObjectDto;
 use App\Models\PlayGame;
 use App\Models\User;
@@ -12,11 +13,13 @@ class GameService
 {
     public function getPlayGameData(array $data, User $user): DataObjectDto
     {
+        log::info($user->id);
+        log::info($data['game_id']);
         $playGames = PlayGame::select(
             'play_game.date_play',
             'play_game.win',
             'play_game.bet',
-            'play_game.ration',
+            'play_game.ratio',
         )
             ->where([['user_id', $user->id],['gameId', $data['game_id']]])
             ->paginate($data['count'], ['*'], 'page',  $data['page']);

@@ -84,7 +84,6 @@ class BalanceService
             ->where('user_id', $user->id)
             ->join('bonus', 'bonus.id', '=', 'fs_balances.bonus_id')
             ->get();
-
         return new DataObjectDto(status: true, data: $data);
     }
 

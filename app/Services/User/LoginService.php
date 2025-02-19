@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\DTO\DataArrayDto;
 use App\Events\UserLogin;
+use App\Models\FsBalance;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 

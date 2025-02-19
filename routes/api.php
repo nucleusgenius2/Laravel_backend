@@ -12,14 +12,15 @@ use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Payments\CryptoCloudWalletController;
+use App\Http\Controllers\Payments\ExnodeController;
 use App\Http\Controllers\Payments\PaymentController;
 use App\Http\Controllers\Payments\WithdrawalsController;
 use App\Http\Controllers\Profile\ChangeEmailController;
+use App\Http\Controllers\Profile\UserParamsController;
 use App\Http\Controllers\Profile\UserSessionController;
 use App\Http\Controllers\Profile\UserSettingController;
 use App\Http\Controllers\State\AdvertController;
 use App\Http\Controllers\State\FiatCoinController;
-use App\Http\Controllers\State\GameStateController;
 use App\Http\Controllers\State\PlayGameController;
 use App\Http\Controllers\State\PlayGameStatController;
 use App\Http\Controllers\UserController;
@@ -57,13 +58,13 @@ Route::prefix('v1')->group(function () {
 
             Route::get('currencies_user', [FiatCoinController::class, 'getFiatUser']);
 
-            Route::get('change_email', [ChangeEmailController::class, 'changeEmail']);
+            Route::post('change_email', [ChangeEmailController::class, 'changeEmail']);
             Route::patch('change_email', [ChangeEmailController::class, 'verificationEmail']);
 
             Route::get('sessions_history', [UserSessionController::class, 'index']);
             Route::patch('setting', [UserSettingController::class, 'store']);
 
-
+            Route::get('params', [UserParamsController::class, 'index']);
         });
 
         Route::post('auth', [LoginController::class, 'login']);
@@ -77,18 +78,22 @@ Route::prefix('v1')->group(function () {
     Route::prefix('stat')->group(function () {
         Route::get('currencies', [FiatCoinController::class, 'index']);
         Route::get('currencies/{code}', [FiatCoinController::class, 'show']);
-        Route::get('game', [GameStateController::class, 'index']);
 
         Route::get('country', [CountryController::class, 'index']);
         Route::get('set_country', [CountryController::class, 'setCountry']);
         Route::get('winner_table', [PlayGameController::class, 'indexTable']);
         Route::get('winner_slider', [PlayGameController::class, 'indexSlider']);
-        Route::get('winner/{id}', [PlayGameController::class, 'show']);
 
         Route::get('winner_test', [PlayGameController::class, 'createTest']);
         Route::get('advert', [AdvertController::class, 'index']);
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('play_game', [PlayGameStatController::class, 'index']);
+        });
+
+        Route::prefix('game')->group(function () {
+            Route::middleware(['auth:sanctum'])->group(function () {
+                Route::get('play_game', [PlayGameController::class, 'index']);
+            });
         });
     });
 
@@ -114,13 +119,13 @@ Route::prefix('v1')->group(function () {
             Route::get('withdrawals', [WithdrawalsController::class, 'index']);
 
             Route::get('/pay_crypto', [CryptoCloudWalletController::class, 'createPayment']);
-
+            Route::get('/pay_exnode', [ExnodeController::class, 'createPayment']);
+            Route::get('/exnode_tokens', [ExnodeController::class, 'getTokens']);
         });
 
-
         Route::post('/cryptocloud/callback', [CryptoCloudWalletController::class, 'callback']);
+        Route::post('/exnode/callback', [ExnodeController::class, 'callback']);
     });
-
 
     //Route::post('/cryptocloud_payments/callback', [CryptoCloudController::class, 'callback']);
    // Route::post('/cryptocloud_payments/callback', [CryptoCloudWalletController::class, 'callback']);

@@ -6,6 +6,7 @@ namespace App\Services\User;
 
 use App\DTO\DataArrayDto;
 use App\Models\FiatCoin;
+use App\Models\FsBalance;
 use App\Models\User;
 use App\Models\UserParam;
 
@@ -25,13 +26,17 @@ class UserAuthDataService
                 ->where('user_params.id', $user->id)
                 ->join('fiat_coin', 'fiat_coin.id', '=', 'user_params.currency_id')
                 ->first();
-
+            $fsCount = FsBalance::where('user_id', $user->id)
+                ->where('count', '>', 0)
+                ->where('to_date', '>', now())
+                ->count();
 
             $data = [
                 'level' => $this->service->getUserLevel(userId: $user->id),
                 'balance' => $this->service->getMainBalance($user->id),
                 'main_currency' => $userParams->code,
                 'uuid' => $user->uuid,
+                'fs_count' => $fsCount,
             ];
 
             return new DataArrayDto(status: true, data: $data);

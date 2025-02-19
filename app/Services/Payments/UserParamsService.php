@@ -18,7 +18,7 @@ class UserParamsService
             'password' => [
                 'status' => (bool)$user->password,
             ],
-            '2fad' => [
+            '2fa' => [
                 'status' => false,
             ]
         ];

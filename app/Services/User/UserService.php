@@ -272,6 +272,11 @@ class UserService
 
     public function returnAuthData(User $user, string $token, ?UserParam $userParam = null): array
     {
+        $fsCount = FsBalance::where('user_id', $user->id)
+            ->where('count', '>', 0)
+            ->where('to_date', '>', now())
+            ->count();
+
         if($userParam){
             return  [
                 'token' => $token,
@@ -282,6 +287,7 @@ class UserService
                 'balance' => $this->getMainBalance($user->id),
                 'country' => $userParam->country,
                 'avatar' => $userParam->avatar,
+                'fs_count' => $fsCount,
                 'user_cfg' => [
                     'cfg_sound' => $userParam->cfg_sound,
                     'cfg_music' => $userParam->cfg_music,
@@ -303,6 +309,7 @@ class UserService
                 'balance' => $this->getMainBalance($user->id),
                 'country' => $user->country,
                 'avatar' => $user->avatar,
+                'fs_count' => $fsCount,
                 'user_cfg' => [
                     'cfg_sound' => $user->cfg_sound,
                     'cfg_music' => $user->cfg_music,
