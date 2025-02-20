@@ -10,25 +10,28 @@ use Carbon\Carbon;
 
 class WithdrawalService
 {
-    public function getPayments(User $user) : DataObjectDto
+    public function getPayments(User $user, array $data) : DataObjectDto
     {
         $payments = Withdrawal::select(
-            'withdrawals.amount_income',
-            'withdrawals.currency_id',
+            'withdrawals.amount',
+            'fiat_coin.code as currency',
+            'withdrawals.invoice_uid as invoice_id',
             'withdrawals.status',
             'withdrawals.date_start',
             'withdrawals.date_completion',
-            'withdrawals.processing',
-            'fiat_coin.code'
+            'income_fiat_coin.code as income_currency'
         )
             ->where('withdrawals.user_id', $user->id)
             ->join('fiat_coin', 'fiat_coin.id', '=', 'withdrawals.currency_id')
-            ->get();
+            ->leftJoin('fiat_coin as income_fiat_coin', 'income_fiat_coin.id', '=', 'withdrawals.currency_income_id')
+            ->paginate($data['count'], ['*'], 'page',  $data['page'] ?? 1);
+
 
         // корректируем дату
         $payments->transform(function ($payment) {
-            $payment->date = $payment->date_completion ? Carbon::parse($payment->date_completion)->format('Y-m-d') : Carbon::parse($payment->date_start)->format('Y-m-d');
+            $payment->date = $payment->date_completion ?? $payment->date_start;
 
+            unset($payment->date_completion, $payment->date_start);
             return $payment;
         });
 

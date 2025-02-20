@@ -1,7 +1,7 @@
 {
-    "getPayments": {
-        "summary": "Получение списка платежей пользователя",
-        "description": "Возвращает список платежей пользователя с их данными.",
+    "getPlayGame": {
+        "summary": "Получение статистики по играм",
+        "description": "Возвращает статистику по играм, с возможностью пагинации.",
         "tags": ["Profile"],
         "security": [
             {
@@ -12,12 +12,12 @@
             {
                 "name": "page",
                 "in": "query",
-                "required": false,
+                "required": true,
                 "schema": {
                     "type": "integer",
                     "minimum": 1
                 },
-                "description": "Номер страницы (начиная с 1)"
+                "description": "Номер страницы для пагинации."
             },
             {
                 "name": "count",
@@ -27,7 +27,17 @@
                     "type": "integer",
                     "minimum": 1
                 },
-                "description": "Количество элементов на странице"
+                "description": "Количество записей на странице."
+            },
+            {
+                "name": "game_id",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "description": "ID игры для получения статистики."
             }
         ],
         "responses": {
@@ -42,28 +52,16 @@
                                 "current_page": 1,
                                 "data": [
                                     {
-                                        "amount": "0.100000000000",
-                                        "currency": "BNB",
-                                        "invoice_id": "c6088a7737309643f003e5f6c437e2ea",
-                                        "status": "success",
-                                        "bonus_amount": null,
-                                        "method": "BNB",
-                                        "date": "2025-02-12 11:00:04"
-                                    },
-                                    {
-                                        "amount": null,
-                                        "currency": "BNB",
-                                        "invoice_id": "522bddf2697f638de2ab8e1d8e075b7d",
-                                        "status": "not_paid",
-                                        "bonus_amount": null,
-                                        "method": null,
-                                        "date": "2025-02-12 11:00:55"
+                                        "date_play": "2025-02-14 15:02:00",
+                                        "win": "1",
+                                        "bet": "2",
+                                        "ratio": "1"
                                     }
                                 ],
-                                "first_page_url": "http://localhost/api/v1/user/payment?page=1",
+                                "first_page_url": "http://localhost/api/v1/stat/game/play_game?page=1",
                                 "from": 1,
                                 "last_page": 1,
-                                "last_page_url": "http://localhost/api/v1/user/payment?page=1",
+                                "last_page_url": "http://localhost/api/v1/stat/game/play_game?page=1",
                                 "links": [
                                     {
                                         "url": null,
@@ -71,7 +69,7 @@
                                         "active": false
                                     },
                                     {
-                                        "url": "http://localhost/api/v1/user/payment?page=1",
+                                        "url": "http://localhost/api/v1/stat/game/play_game?page=1",
                                         "label": "1",
                                         "active": true
                                     },
@@ -82,40 +80,46 @@
                                     }
                                 ],
                                 "next_page_url": null,
-                                "path": "http://localhost/api/v1/user/payment",
-                                "per_page": 19,
+                                "path": "http://localhost/api/v1/stat/game/play_game",
+                                "per_page": 2,
                                 "prev_page_url": null,
-                                "to": 2,
-                                "total": 2
+                                "to": 1,
+                                "total": 1
                             }
                         }
                     }
                 }
             },
-            "401": {
-                "description": "Неавторизован",
-                "content": {
-                    "application/json": {
-                        "example": {
-                            "message": "Unauthenticated."
-                        }
-                    }
-                }
-            },
             "422": {
-                "description": "Ошибка валидации данных",
+                "description": "Ошибка валидации",
                 "content": {
                     "application/json": {
                         "example": {
                             "data": {
                                 "status": "error",
                                 "message": {
+                                    "page": [
+                                        "The page field is required."
+                                    ],
                                     "count": [
                                         "The count field is required."
+                                    ],
+                                    "game_id": [
+                                        "The game id field is required."
                                     ]
                                 },
                                 "json": []
                             }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Неавторизованный запрос",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
                         }
                     }
                 }

@@ -65,6 +65,13 @@ Route::prefix('v1')->group(function () {
             Route::patch('setting', [UserSettingController::class, 'store']);
 
             Route::get('params', [UserParamsController::class, 'index']);
+
+            Route::get('payment', [PaymentController::class, 'index']);
+            Route::get('withdrawals', [WithdrawalsController::class, 'index']);
+
+            Route::get('play_game/stat', [PlayGameStatController::class, 'index']);
+            Route::get('play_game/table', [PlayGameController::class, 'index']);
+
         });
 
         Route::post('auth', [LoginController::class, 'login']);
@@ -86,15 +93,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('winner_test', [PlayGameController::class, 'createTest']);
         Route::get('advert', [AdvertController::class, 'index']);
-        Route::middleware(['auth:sanctum'])->group(function () {
-            Route::get('play_game', [PlayGameStatController::class, 'index']);
-        });
 
-        Route::prefix('game')->group(function () {
-            Route::middleware(['auth:sanctum'])->group(function () {
-                Route::get('play_game', [PlayGameController::class, 'index']);
-            });
-        });
     });
 
     Route::prefix('websocket')->group(function () {
@@ -115,9 +114,6 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware(['auth:sanctum'])->group(function () {
             //Route::get('/pay_crypto', [CryptoCloudController::class, 'createPayment']);
-            Route::get('/', [PaymentController::class, 'index']);
-            Route::get('withdrawals', [WithdrawalsController::class, 'index']);
-
             Route::get('/pay_crypto', [CryptoCloudWalletController::class, 'createPayment']);
             Route::get('/pay_exnode', [ExnodeController::class, 'createPayment']);
             Route::get('/exnode_tokens', [ExnodeController::class, 'getTokens']);

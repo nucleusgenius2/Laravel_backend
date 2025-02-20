@@ -1,11 +1,33 @@
 {
-    "getWthdrawals":  {
+    "getWthdrawals": {
         "summary": "Получение списка платежей пользователя",
         "description": "Возвращает список платежей пользователя с их данными.",
-        "tags": ["Payment"],
+        "tags": ["Profile"],
         "security": [
             {
                 "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "page",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "description": "Номер страницы (начиная с 1)"
+            },
+            {
+                "name": "count",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "description": "Количество элементов на странице"
             }
         ],
         "responses": {
@@ -16,38 +38,82 @@
                         "example": {
                             "message": null,
                             "status": "success",
-                            "json": [
-                                {
-                                    "amount_income": "0.100000000000",
-                                    "currency_id": 6,
-                                    "status": "success",
-                                    "date_start": "2025-02-12 10:56:31",
-                                    "date_completion": "2025-02-12 11:00:04",
-                                    "processing": "crypto_cloud_wallet",
-                                    "code": "BNB",
-                                    "date": "2025-02-12"
-                                },
-                                {
-                                    "amount_income": null,
-                                    "currency_id": 6,
-                                    "status": "not_paid",
-                                    "date_start": "2025-02-12 11:00:55",
-                                    "date_completion": null,
-                                    "processing": "crypto_cloud_wallet",
-                                    "code": "BNB",
-                                    "date": "2025-02-12"
-                                }
-                            ]
+                            "json": {
+                                "current_page": 1,
+                                "data": [
+                                    {
+                                        "amount": "0.100000000000",
+                                        "currency": "BNB",
+                                        "invoice_id": "c6088a7737309643f003e5f6c437e2ea",
+                                        "status": "success",
+                                        "method": "BNB",
+                                        "date": "2025-02-12 11:00:04"
+                                    },
+                                    {
+                                        "amount": null,
+                                        "currency": "BNB",
+                                        "invoice_id": "522bddf2697f638de2ab8e1d8e075b7d",
+                                        "status": "not_paid",
+                                        "method": null,
+                                        "date": "2025-02-12 11:00:55"
+                                    }
+                                ],
+                                "first_page_url": "http://localhost/api/v1/user/withdrawals?page=1",
+                                "from": null,
+                                "last_page": 1,
+                                "last_page_url": "http://localhost/api/v1/user/withdrawals?page=1",
+                                "links": [
+                                    {
+                                        "url": null,
+                                        "label": "&laquo; Previous",
+                                        "active": false
+                                    },
+                                    {
+                                        "url": "http://localhost/api/v1/user/withdrawals?page=1",
+                                        "label": "1",
+                                        "active": true
+                                    },
+                                    {
+                                        "url": null,
+                                        "label": "Next &raquo;",
+                                        "active": false
+                                    }
+                                ],
+                                "next_page_url": null,
+                                "path": "http://localhost/api/v1/user/withdrawals",
+                                "per_page": 10,
+                                "prev_page_url": null,
+                                "to": null,
+                                "total": 0
+                            }
                         }
                     }
                 }
             },
             "401": {
-                "description": "Неавторизован",
+                "description": "Не авторизован",
                 "content": {
                     "application/json": {
                         "example": {
                             "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации данных",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "data": {
+                                "status": "error",
+                                "message": {
+                                    "count": [
+                                        "The count field is required."
+                                    ]
+                                },
+                                "json": []
+                            }
                         }
                     }
                 }

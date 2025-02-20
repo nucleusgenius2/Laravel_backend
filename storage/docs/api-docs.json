@@ -156,16 +156,16 @@
             }
         },
 
-        "/api/v1/payment": {
+        "/api/v1/user/payment": {
             "get": {
                 "$ref": "./payment.json#/getPayments",
-                "tags": ["Payment"]
+                "tags": ["Profile"]
             }
         },
-        "/api/v1/payment/withdrawals": {
+        "/api/v1/user/withdrawals": {
             "get": {
                 "$ref": "./wthdrawal.json#/getWthdrawals",
-                "tags": ["Payment"]
+                "tags": ["Profile"]
             }
         },
 
@@ -190,6 +190,13 @@
                 "tags": ["Profile"]
             }
         },
+        "/api/v1/user/params": {
+            "get": {
+                "$ref": "./user_params.json#/getParams",
+                "tags": ["Profile"]
+            }
+        },
+
 
         "/api/v1/user": {
             "get": {
@@ -201,7 +208,7 @@
                 "tags": ["Profile"]
             }
         },
-        "/api/v1/stat/play_game": {
+        "/api/v1/user/play_game/stat": {
             "get": {
                 "$ref": "./game_stat.json#/gameData",
                 "tags": ["Profile"]
@@ -220,7 +227,18 @@
                 "$ref": "./user_setting.json#/updateSetting",
                 "tags": ["Profile"]
             }
+        },
+
+        "/api/v1/user/play_game/table": {
+            "get": {
+                "$ref": "./play_game.json#/getPlayGame",
+                "tags": ["Profile"]
+            }
         }
+
+
+
+
 
 
     }

@@ -35,7 +35,11 @@
                                                         "full_amount": { "type": "integer", "example": 0 }
                                                     }
                                                 },
-                                                "balance": { "type": "integer", "example": 0 }
+                                                "balance": { "type": "integer", "example": 0 },
+                                                "fs_count": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                }
                                             }
                                         }
                                     }

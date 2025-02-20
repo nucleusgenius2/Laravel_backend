@@ -1,8 +1,10 @@
 {
-    "updateSetting":{
+    "updateSetting": {
         "summary": "Обновить настройки пользователя",
         "description": "Позволяет обновить настройки пользователя, связанные с конфиденциальностью имени и статистики.",
-        "tags": ["Profile"],
+        "tags": [
+            "Profile"
+        ],
         "security": [
             {
                 "sanctum": []
@@ -28,9 +30,52 @@
                                 "maximum": 1,
                                 "example": 0,
                                 "description": "Скрыть статистику пользователя (0 - нет, 1 - да)"
+                            },
+                            "cfg_sound": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "example": 0,
+                                "description": "Включить всю музыку пользователя (0 - нет, 1 - да)"
+                            },
+                            "cfg_music": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 100,
+                                "example": 0,
+                                "description": "Уровень громкости музыки пользователя (0% - 100%)"
+                            },
+                            "cfg_effect": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 100,
+                                "example": 0,
+                                "description": "Уровень громкости эффектов пользователя (0% - 100%)"
+                            },
+                            "cfg_hidden_game": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "example": 0,
+                                "description": "Скрыть заблокированные игры (0 - нет, 1 - да)"
+                            },
+                            "cfg_animation": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "example": 0,
+                                "description": "Анимация (0 - нет, 1 - да)"
                             }
                         },
-                        "required": ["cfg_hidden_name", "cfg_hidden_stat"]
+                        "required": [
+                            "cfg_hidden_name",
+                            "cfg_hidden_stat",
+                            "cfg_music",
+                            "cfg_sound",
+                            "cfg_effect",
+                            "cfg_hidden_game",
+                            "cfg_animation"
+                        ]
                     }
                 }
             }
