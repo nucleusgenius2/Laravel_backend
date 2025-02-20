@@ -234,12 +234,14 @@
                 "$ref": "./play_game.json#/getPlayGame",
                 "tags": ["Profile"]
             }
+        },
+
+
+        "/api/v1/payment/exnode_tokens": {
+            "get": {
+                "$ref": "./payment_exnode.json#/getExnodeTokens",
+                "tags": ["Payment"]
+            }
         }
-
-
-
-
-
-
     }
 }

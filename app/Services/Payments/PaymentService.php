@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentService
 {
-    public function getPayments(User $user, array $data) : DataObjectDto
+    public function getPayments(User $user, array $data): DataObjectDto
     {
         $payments = Payment::select(
             'payments.amount',

@@ -39,7 +39,6 @@ class CryptoCloudWalletService
         $orderId = GenerateUniqueString::generate(userId: $user->id, length: 40);
         $url = $this->baseUrl.'/invoice/static/create';
 
-log::info('кастом валлет id'.$orderId);
         $response = Http::withHeaders([
             'Authorization' => 'Token ' . $this->apiKey,
             'Content-Type'  => 'application/json',
@@ -49,7 +48,6 @@ log::info('кастом валлет id'.$orderId);
                 'currency' => $currency,
                 'identify' => $orderId,
             ]);
-log::info($response);
 
         if($response['status']){
 
@@ -78,7 +76,6 @@ log::info($response);
                 }
 
                 DB::commit();
-                log::info( $response['result']);
                 return new DataStringDto(status: true, data: $response['result']['address']);
             }
             catch (\Exception $e) {
@@ -88,7 +85,7 @@ log::info($response);
             }
         }
         else{
-            log::error( $response['result']);
+            log::channel('cryptocloud')->error( $response['result']);
             return new DataStringDto(status: true, error: json_encode($response['result']));
         }
 
@@ -153,7 +150,6 @@ log::info($response);
                     if(!$currencyIncome){
                         throw new \Exception('не найдена входящая валюта для '.$payment->user_id);
                     }
-
 
                     //конвертация входящей валюты в текущую валюту юзера
                     $cost = $this->convert(currencyPrev: $currencyCallback->code, currencyNext:  $currencyIncome->code);

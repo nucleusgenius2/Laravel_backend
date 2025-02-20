@@ -1,0 +1,60 @@
+{
+    "getExnodeTokens": {
+        "summary": "Получение списка доступных токенов",
+        "description": "Возвращает список доступных токенов для платежей.",
+        "tags": ["Payment"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": [
+                                "BTC",
+                                "BCH",
+                                "ETH",
+                                "LTC",
+                                "DASH",
+                                "DOGE",
+                                "TRX",
+                                "USDTTRC",
+                                "BNB",
+                                "TON",
+                                "DAIERC",
+                                "MATIC",
+                                "USDTERC",
+                                "USDTBSC",
+                                "BTCBBSC",
+                                "USDTPOLY",
+                                "USDCERC",
+                                "NOT",
+                                "USDTTON",
+                                "AVAX",
+                                "DAIPOLY",
+                                "DYDXERC",
+                                "HMSTRTON"
+                            ]
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Не авторизован",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

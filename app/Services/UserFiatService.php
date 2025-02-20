@@ -15,7 +15,7 @@ class UserFiatService
     /**
      * Возвращаем список доступных валют для создания нового счета у пользователя
      * @param User $user
-     * @return array|null
+     * @return DataArrayDto
      */
     public function getUserCurrencies(User $user): DataArrayDto
      {
@@ -35,7 +35,7 @@ class UserFiatService
              return new DataArrayDto(status: true, data: array_diff($currenciesArray, $usedCurrencies));
          }
          else{
-             return new DataArrayDto(status: false);
+             return new DataArrayDto(status: false, error: 'страна юзера не найдена');
          }
      }
 
@@ -55,7 +55,10 @@ class UserFiatService
             }
             return new DataObjectDto(status: false, error: 'Нет доступных валют', code: 400);
         }
-        return new DataObjectDto(status: false, code: 500);
+        else{
+            return new DataObjectDto(status: false, error: $dataArrayDto->error, code: 500);
+        }
+
     }
 
     public function getCurrencies(): DataObjectDto
@@ -68,7 +71,7 @@ class UserFiatService
     public function showCurrencies(string $code): DataObjectDto
     {
         if (!ctype_alnum($code)) {
-            return new DataObjectDto(status: false, error: 'Не валидные данные');
+            return new DataObjectDto(status: false, error: 'Не валидные данные', code: 400);
         } else {
             $currency = FiatCoin::where('code', $code)->first();
 
@@ -76,7 +79,7 @@ class UserFiatService
                 return new DataObjectDto(status: true, data: $currency);
             }
             else {
-                return new DataObjectDto(status: false,  error: 'Валюта не найдена');
+                return new DataObjectDto(status: false,  error: 'Валюта не найдена', code: 404);
             }
 
         }
