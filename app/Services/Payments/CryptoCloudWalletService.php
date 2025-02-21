@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserParam;
 use App\Services\GenerateUniqueString;
 use App\Traits\CurrencyRateProvider;
+use App\Traits\PaymentBalance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -21,9 +22,12 @@ use Illuminate\Support\Facades\Validator;
 
 class CryptoCloudWalletService
 {
-    use CurrencyRateProvider;
+    use PaymentBalance;
+
     protected string $apiKey;
+
     protected string $shopId;
+
     protected string $baseUrl;
 
     public function __construct()
@@ -129,50 +133,25 @@ class CryptoCloudWalletService
                     $payment->status = config('payments.status.success');
                     $payment->amount_income = $requestData['amount_crypto'];
 
-                    $balance = Balance::where('id', function ($query) use ($payment) {
-                        $query->select('balances.id')
-                            ->from('user_params')
-                            ->where('user_params.id', $payment->user_id)
-                            ->join('accounts', function ($join) {
-                                $join->on('user_params.id', '=', 'accounts.user_id')
-                                    ->where('accounts.type', '=', 'main')
-                                    ->on('accounts.fiat_coin', '=', 'user_params.currency_id');
-                            })
-                            ->join('balances', 'accounts.id', '=', 'balances.account_id');
-                    })->first();
+                    $dataStringAndObject = $this->getConvertedAmount(
+                        payment: $payment,
+                        currencyCallback: $currencyCallback,
+                        amountIncome: $requestData['amount_crypto']
+                    );
+                    if ($dataStringAndObject->status) {
+                        $balance = $dataStringAndObject->dataObject;
 
+                        $newAmount = $dataStringAndObject->dataString;
 
-                    if(!$balance){
-                        throw new \Exception('При пополнении не найден баланс для юзера '.$payment->user_id);
+                        $balance->amount = ($balance->amount ?? 0) + $newAmount;
+                        $payment->amount = $newAmount;
+
+                        if (!$payment->save() || !$balance->save()) {
+                            throw new \Exception('Ошибка сохранения данных в БД');
+                        }
+                    } else {
+                        throw new \Exception($dataStringAndObject->error);
                     }
-
-                    $currencyIncome = FiatCoin::select('code')->where('id', $payment->currency_income_id)->first();
-                    if(!$currencyIncome){
-                        throw new \Exception('не найдена входящая валюта для '.$payment->user_id);
-                    }
-
-                    //конвертация входящей валюты в текущую валюту юзера
-                    $cost = $this->convert(currencyPrev: $currencyCallback->code, currencyNext:  $currencyIncome->code);
-                    if (!$cost){
-                        throw new \Exception('Данные о курсе валют не получены: ' . $currencyCallback->code.' '.$currencyIncome->code);
-                    }
-
-                    $newAmount = $this->convertTotal(cost: $cost, amount: $requestData['amount_crypto']);
-
-
-    log::channel('cryptocloud')->error('currencyCallback->code'  .$currencyCallback->code);
-   log::channel('cryptocloud')->error('urrencyIncome->code'  . $currencyIncome->code);
- log::channel('cryptocloud')->error('итог'  .$newAmount);
-
-                    if( $balance->amount ){
-                        $balance->amount = $balance->amount + $newAmount;
-                    }
-                    else{
-                        $balance->amount = $newAmount;
-                    }
-                    $payment->amount = $newAmount;
-                    $payment->save();
-                    $balance->save();
 
                     DB::commit();
                 }

@@ -19,12 +19,12 @@ class WithdrawalService
             'withdrawals.status',
             'withdrawals.date_start',
             'withdrawals.date_completion',
-            'income_fiat_coin.code as income_currency'
+            'income_fiat_coin.code as method'
         )
             ->where('withdrawals.user_id', $user->id)
             ->join('fiat_coin', 'fiat_coin.id', '=', 'withdrawals.currency_id')
             ->leftJoin('fiat_coin as income_fiat_coin', 'income_fiat_coin.id', '=', 'withdrawals.currency_income_id')
-            ->paginate($data['count'], ['*'], 'page',  $data['page'] ?? 1);
+            ->paginate($data['count'] ?? 5, ['*'], 'page',  $data['page'] ?? 1);
 
 
         // корректируем дату

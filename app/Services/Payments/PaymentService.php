@@ -25,7 +25,7 @@ class PaymentService
             ->where('payments.user_id', $user->id)
             ->join('fiat_coin', 'fiat_coin.id', '=', 'payments.currency_id')
             ->leftJoin('fiat_coin as income_fiat_coin', 'income_fiat_coin.id', '=', 'payments.currency_income_id')
-            ->paginate($data['count'], ['*'], 'page',  $data['page'] ?? 1);
+            ->paginate($data['count'] ?? 5, ['*'], 'page',  $data['page'] ?? 1);
 
         // корректируем дату
         $payments->transform(function ($payment) {

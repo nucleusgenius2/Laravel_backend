@@ -24,8 +24,13 @@ class ExnodeRequest extends FormRequest
     {
         return [
             'amount' => 'required|string',
-            'currency' => 'required', 'string', 'in:USD,UZS,KGS,KZT,AMD,AZN,BYN,AUD,TRY,AED,CAD,CNY,HKD,IDR,INR,JPY,PHP,SGD,THB,VND,MYR,RUB,UAH,EUR,GBP',
+            'currency' => [
+                'required',
+                'string',
+                'in:BTC,BCH,ETH,LTC,DASH,DOGE,TRX,USDTTRC,BNB,TON,DAIERC,MATIC,USDTERC,USDTBSC,BTCBBSC,USDTPOLY,USDCERC,NOT,USDTTON,AVAX,DAIPOLY,DYDXERC,HMSTRTON'
+            ],
         ];
+
     }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

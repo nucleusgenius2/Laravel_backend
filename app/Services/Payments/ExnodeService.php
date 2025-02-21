@@ -19,8 +19,11 @@ use Illuminate\Support\Facades\Log;
 class ExnodeService
 {
     use PaymentBalance;
+
     protected string $publicKey;
+
     protected string $privateKey;
+
     protected string $baseUrl;
 
     public function __construct()
@@ -35,7 +38,8 @@ class ExnodeService
         $orderId = GenerateUniqueString::generate(userId: $user->id, length: 40);
 
         $transactionData = [
-            'token' => 'BNB',
+            //'token' => 'BNB',
+            'token' => $currency,
             'client_transaction_id' => $orderId,
             'transaction_description' => 'Some description',
             'address_type' => 'SINGLE',
@@ -48,7 +52,7 @@ class ExnodeService
         $response = Http::withHeaders($headers)
             ->post( $this->baseUrl.'/api/transaction/create/in', $transactionData);
 
-        log::info($response);
+        //log::info($response);
 
         if ($response->successful()) {
 
@@ -87,7 +91,7 @@ class ExnodeService
         }
         else{
             log::error( $response);
-            return new DataStringDto(status: true, error: 'Ошибка при создании счета', code: 500);
+            return new DataStringDto(status: false, error: 'Ошибка при создании счета', code: 500);
         }
     }
 
@@ -166,7 +170,7 @@ class ExnodeService
 
             log::channel('exnode')->info('Exnode Transaction Response', ['data' => $transactionData]);
 
-            if ($transactionData['status'] === 'success') {
+            if ($transactionData['status'] === 'SUCCESS') {
                 try {
                     DB::beginTransaction();
 
@@ -176,23 +180,23 @@ class ExnodeService
                     ])->first();
 
                     if (!$payment) {
-                        throw new \Exception('не найден открытый инвойс для ' . $trackerId);
+                        throw new \Exception('Не найден открытый инвойс для ' . $transactionData['client_transaction_id']);
                     }
 
-                    $currencyCallback = FiatCoin::where('code', $requestData['token'])->first();
+                    $currencyCallback = FiatCoin::where('code', $transactionData['token'])->first();
                     if (!$currencyCallback) {
-                        throw new \Exception('Оплатил не допустимой валютой ' . $requestData['token'] . ' юзер ' . $payment->user_id);
+                        throw new \Exception('Оплатил не допустимой валютой ' .$transactionData['token'] . ' юзер ' . $payment->user_id);
                     }
 
                     $payment->date_completion = Carbon::now();
                     $payment->currency_income_id = $currencyCallback->id;
                     $payment->status = config('payments.status.success');
-                    $payment->amount_income = $requestData['total'];
+                    $payment->amount_income = $transactionData['total'];
 
                     $dataStringAndObject = $this->getConvertedAmount(
                         payment: $payment,
                         currencyCallback: $currencyCallback,
-                        amountIncome: $requestData['total']
+                        amountIncome: $transactionData['total']
                     );
                     if ($dataStringAndObject->status) {
                         $balance = $dataStringAndObject->dataObject;
@@ -215,11 +219,12 @@ class ExnodeService
                 }
                 catch (\Exception $e) {
                     DB::rollBack();
-                    return new DataEmptyDto(status: false, error: 'Ошибка обновления платежа', code: 500);
+                    return new DataEmptyDto(status: false, error: $e, code: 500);
                 }
             }
             else {
                 log::channel('exnode')->error('Транзакция не завершена ' . $trackerId);
+                return new DataEmptyDto(status: false, error: 'Ошибка обновления платежа', code: 500);
             }
 
         }

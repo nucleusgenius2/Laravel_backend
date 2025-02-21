@@ -55,7 +55,6 @@ class ExnodeController extends Controller
         if ($dataEmptyDto->status){
             $this->status = 'success';
             $this->code = 200;
-            $this->dataJson = $dataEmptyDto->data;
         }
         else{
             $this->message = $dataEmptyDto->error;

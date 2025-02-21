@@ -242,6 +242,13 @@
                 "$ref": "./payment_exnode.json#/getExnodeTokens",
                 "tags": ["Payment"]
             }
+        },
+
+        "/api/v1/payment/pay_exnode": {
+            "get": {
+                "$ref": "./payment_exnode.json#/createWallet",
+                "tags": ["Payment"]
+            }
         }
     }
 }

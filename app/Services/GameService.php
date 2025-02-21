@@ -22,7 +22,7 @@ class GameService
             'play_game.ratio',
         )
             ->where([['user_id', $user->id],['gameId', $data['game_id']]])
-            ->paginate($data['count'], ['*'], 'page',  $data['page']);
+            ->paginate($data['count'] ?? 5, ['*'], 'page',  $data['page'] ?? 1);
 
         return new DataObjectDto(status: 200, data: $playGames);
     }

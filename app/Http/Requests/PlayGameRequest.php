@@ -23,8 +23,8 @@ class PlayGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => 'required|int|min:1',
-            'count' => 'required|int|min:1',
+            'page' => 'int|min:1',
+            'count' => 'int|min:1',
             'game_id' => 'required|int|min:1',
         ];
     }

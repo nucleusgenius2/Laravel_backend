@@ -56,5 +56,79 @@
                 }
             }
         }
+    },
+    "createWallet" :{
+        "summary": "Оплатить через Exnode",
+        "description": "Создает платеж через Exnode и возвращает адрес для перевода средств.",
+        "tags": ["Payment"],
+        "security": [
+            {
+                "sanctum": []
+            }
+        ],
+        "parameters": [
+            {
+                "name": "amount",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "number",
+                    "minimum": 0.00000001
+                },
+                "description": "Сумма платежа"
+            },
+            {
+                "name": "currency",
+                "in": "query",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "Код валюты (например, BNB, BTC, USDT)"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Успешный ответ",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": null,
+                            "status": "success",
+                            "json": "0xfaf8812eC7F94F019308e579609D58d8551b844f"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Не авторизован",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Ошибка валидации данных",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "data": {
+                                "status": "error",
+                                "message": {
+                                    "currency": [
+                                        "The currency field is required."
+                                    ]
+                                },
+                                "json": []
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
 }

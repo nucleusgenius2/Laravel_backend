@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Log;
 class CryptoCloudService
 {
     protected string $apiKey;
+
     protected string $shopId;
+
     protected string $baseUrl;
+
 
     public function __construct()
     {
@@ -45,16 +48,4 @@ class CryptoCloudService
         ];
     }
 
-    /**
-     * Получение информации о платеже
-     */
-    public function getInvoiceStatus(string $invoiceId)
-    {
-        $response = Http::withHeaders([
-            'Authorization' => 'Token ' . $this->apiKey,
-        ])->get("{$this->baseUrl}/v1/invoice/info/{$invoiceId}");
-
-        log::info($response->json());
-        return $response->json();
-    }
 }

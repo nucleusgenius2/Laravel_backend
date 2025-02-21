@@ -24,7 +24,7 @@ class PaginationRequest extends FormRequest
     {
         return [
             'page' => 'int|min:1',
-            'count' => 'required|int|min:1',
+            'count' => 'int|min:1',
         ];
     }
 

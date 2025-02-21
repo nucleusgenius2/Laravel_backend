@@ -7,6 +7,7 @@ use App\DTO\DataStringDto;
 use App\Models\Balance;
 use App\Models\FiatCoin;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Log;
 
 trait PaymentBalance
 {
@@ -34,18 +35,18 @@ trait PaymentBalance
         })->first();
 
         if(!$balance){
-            new DataStringAndObject(status: false, error: 'При пополнении не найден баланс для юзера '.$payment->user_id);
+            return new DataStringAndObject(status: false, error: 'При пополнении не найден баланс для юзера '.$payment->user_id);
         }
 
-        $currencyIncome = FiatCoin::select('code')->where('id', $payment->currency_income_id)->first();
-        if(!$currencyIncome){
-            new DataStringAndObject(status: false, error: 'не найдена входящая валюта для '.$payment->user_id);
+        $currencyMain = FiatCoin::where('id', $payment->currency_id)->value('code');
+        if(!$currencyMain){
+            return new DataStringAndObject(status: false, error: 'Не найдена выбранная валюта юзера '.$payment->user_id);
         }
 
         //конвертация входящей валюты в текущую валюту юзера
-        $cost = $this->convert(currencyPrev: $currencyCallback->code, currencyNext: $currencyIncome->code);
+        $cost = $this->convert(currencyPrev: $currencyCallback->code, currencyNext: $currencyMain);
         if (!$cost){
-            new DataStringAndObject(status: false, error: 'данные о курсе валют не получены: ' . $currencyCallback->code.' '.$currencyIncome->code);
+            return new DataStringAndObject(status: false, error: 'Данные о курсе валют не получены: ' . $currencyCallback.' '.$currencyMain->code);
         }
 
         $newAmount = $this->convertTotal(cost: $cost, amount: $amountIncome);
