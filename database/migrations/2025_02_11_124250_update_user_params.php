@@ -21,4 +21,17 @@ return new class extends Migration
         });
     }
 
+    public function down()
+    {
+        Schema::table('user_params', function (Blueprint $table) {
+            $table->dropColumn([
+                'cfg_sound',
+                'cfg_music',
+                'cfg_effect',
+                'cfg_hidden_game',
+                'cfg_animation',
+            ]);
+        });
+    }
+
 };

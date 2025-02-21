@@ -7,10 +7,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-	public function up()
+    public function up()
     {
-		Schema::table('balances', function (Blueprint $table) {
-            $table->dropColumn(['to_date', 'count', 'nominal']);
+        Schema::table('balances', function (Blueprint $table) {
+            // Проверяем, существует ли каждый столбец, перед его удалением
+            if (Schema::hasColumn('balances', 'to_date')) {
+                $table->dropColumn('to_date');
+            }
+
+            if (Schema::hasColumn('balances', 'count')) {
+                $table->dropColumn('count');
+            }
+
+            if (Schema::hasColumn('balances', 'nominal')) {
+                $table->dropColumn('nominal');
+            }
         });
     }
 

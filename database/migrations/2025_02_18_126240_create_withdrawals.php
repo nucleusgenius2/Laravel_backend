@@ -26,19 +26,7 @@ return new class extends Migration
 
     public function down()
     {
-		Schema::table('withdrawals', function (Blueprint $table) {
-            $table->dropColumn([
-                'user_id',
-                'invoice_uid',
-                'amount',
-                'amount_income',
-                'processing',
-                'currency_id',
-                'currency_income_id',
-                'status',
-                'date_completion',
-                'date_start'
-            ]);
-        });
+        Schema::dropIfExists('withdrawals');
     }
+
 };

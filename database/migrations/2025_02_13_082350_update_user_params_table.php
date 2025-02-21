@@ -18,6 +18,9 @@ return new class extends Migration
     }
     public function down(): void
     {
-        //
+        Schema::table('user_params', function (Blueprint $table) {
+            $table->dropColumn(['cfg_hidden_name', 'cfg_hidden_stat']);
+        });
     }
+
 };
