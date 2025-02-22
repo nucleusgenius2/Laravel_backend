@@ -50,13 +50,6 @@ class ExnodeController extends Controller
     {
         $dataEmptyDto = $this->service->collback(requestData: $request->all());
 
-        log::info('колбек exnode');
-
-        log::info($request->all());
-
-        //$this->code = 200;
-        //return response()->json();
-
         if ($dataEmptyDto->status){
             $this->status = 'success';
             $this->code = 200;

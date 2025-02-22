@@ -50,9 +50,6 @@ class CryptoCloudWalletController extends Controller
     {
         $this->service->collback(requestData: $request->all());
 
-        log::info('колбек валлет крипто клоуд');
-        log::info($request->all());
-
         //$this->code = 200;
         //return response()->json();
     }
