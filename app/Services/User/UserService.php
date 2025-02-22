@@ -243,7 +243,7 @@ class UserService
         if (count($result) > 0) {
             $userLevel = $result[0]->user_level;
             $maxAmount = $result[0]->maxamount;
-            $fullAmount = $result[0]->fullAmount ?? 0;
+            $fullAmount = $result[0]->fullamount ?? 0;
 
             return [
                 'user_level' => $userLevel,

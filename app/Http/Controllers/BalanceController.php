@@ -43,6 +43,11 @@ class BalanceController extends Controller
     }
 
 
+    /**
+     * Добавление баланса юзеру
+     * @param BalanceRequest $request
+     * @return JsonResponse
+     */
     public function store(BalanceRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -61,6 +66,11 @@ class BalanceController extends Controller
         return $this->responseJsonApi();
     }
 
+    /**
+     * Выбор главного баланса юзера
+     * @param BalanceRequest $request
+     * @return JsonResponse
+     */
     public function setDefault(BalanceRequest $request): JsonResponse
     {
         $data = $request->validated();

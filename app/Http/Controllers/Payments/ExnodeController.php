@@ -19,6 +19,11 @@ class ExnodeController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * Возвращает сгенерированный номер кошелька exnode для оплаты
+     * @param ExnodeRequest $request
+     * @return JsonResponse
+     */
     public function createPayment(ExnodeRequest $request): JsonResponse
     {
         $data = $request->validated();

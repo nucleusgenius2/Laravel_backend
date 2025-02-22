@@ -19,6 +19,11 @@ class CryptoCloudWalletController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * Возвращает сгенерированный номер кошелька crypto cloud для оплаты
+     * @param CryptoCloudRequest $request
+     * @return JsonResponse
+     */
     public function createPayment(CryptoCloudRequest $request): JsonResponse
     {
         $data = $request->validated();

@@ -187,18 +187,6 @@ class BalanceService
             $newAmount = $this->convertTotal(cost: $cost, amount: $balanceOldBonusData->amount);
 
 
-            /*
-            //округление 8 знаков для крипты и 2 для обычных валют
-            if($newCurrency->type==='crypto' || $balanceOldBonusData->type==='crypto') {
-                log::info('type '. $newCurrency->type);
-                $cost = sprintf('%.12f', $cost);
-                $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 12);
-            }
-            else{
-                $newAmount = bcmul((string)$balanceOldBonusData->amount, (string)$cost, 2);
-            }
-            */
-
             $accountUpdate = Account::where([
                 ['user_id', $user->id],
                 ['type', 'bonus']

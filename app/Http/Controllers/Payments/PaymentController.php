@@ -17,6 +17,11 @@ class PaymentController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * Возвращает историю пополнений баланса для юзера
+     * @param PaginationRequest $request
+     * @return JsonResponse
+     */
     public function index(PaginationRequest $request): JsonResponse
     {
         $data = $request->validated();

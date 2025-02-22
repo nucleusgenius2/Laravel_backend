@@ -14,7 +14,7 @@ trait PaymentBalance
     use CurrencyRateProvider;
 
     /**
-     * Возвращает сумму пополнения уже сконвертированную в главную валюту юзера, а также объект баланса юзера
+     * Возвращает сумму пополнения уже с конвертированную в главную валюту юзера, а также объект баланса юзера
      * @param Payment $payment
      * @param FiatCoin $currencyCallback
      * @param string $amountIncome

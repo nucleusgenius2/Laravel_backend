@@ -12,6 +12,7 @@ use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Payments\CryptoCloudWalletController;
+use App\Http\Controllers\Payments\CryptoPaymentsController;
 use App\Http\Controllers\Payments\ExnodeController;
 use App\Http\Controllers\Payments\PaymentController;
 use App\Http\Controllers\Payments\WithdrawalsController;
@@ -114,6 +115,8 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware(['auth:sanctum'])->group(function () {
             //Route::get('/pay_crypto', [CryptoCloudController::class, 'createPayment']);
+            Route::get('/crypto', [CryptoPaymentsController::class, 'index']);
+
             Route::get('/pay_crypto', [CryptoCloudWalletController::class, 'createPayment']);
             Route::get('/pay_exnode', [ExnodeController::class, 'createPayment']);
             Route::get('/exnode_tokens', [ExnodeController::class, 'getTokens']);

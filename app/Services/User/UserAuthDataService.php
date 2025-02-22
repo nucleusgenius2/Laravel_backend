@@ -22,7 +22,7 @@ class UserAuthDataService
     public function authData(User $user): DataArrayDto
     {
         try {
-            $userParams = UserParam::select('fiat_coin.code as code')
+            $userParams = UserParam::select('fiat_coin.code as code', 'user_params.*')
                 ->where('user_params.id', $user->id)
                 ->join('fiat_coin', 'fiat_coin.id', '=', 'user_params.currency_id')
                 ->first();
@@ -37,6 +37,8 @@ class UserAuthDataService
                 'main_currency' => $userParams->code,
                 'uuid' => $user->uuid,
                 'fs_count' => $fsCount,
+                'user_name' => $user->name,
+                'avatar' => $userParams->avatar,
             ];
 
             return new DataArrayDto(status: true, data: $data);

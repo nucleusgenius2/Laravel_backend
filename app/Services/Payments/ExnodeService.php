@@ -12,6 +12,7 @@ use App\Models\UserParam;
 use App\Services\GenerateUniqueString;
 use App\Traits\PaymentBalance;
 use Carbon\Carbon;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -33,6 +34,14 @@ class ExnodeService
         $this->baseUrl = config('payments.exnode.base_url');
     }
 
+    /**
+     * Создание кошелька exnode для оплаты
+     * @param User $user
+     * @param string $currency
+     * @param string $amount
+     * @return DataStringDto
+     * @throws ConnectionException
+     */
     public function createInvoice(User $user, string $currency, string $amount): DataStringDto
     {
         $orderId = GenerateUniqueString::generate(userId: $user->id, length: 40);
@@ -51,8 +60,6 @@ class ExnodeService
 
         $response = Http::withHeaders($headers)
             ->post( $this->baseUrl.'/api/transaction/create/in', $transactionData);
-
-        //log::info($response);
 
         if ($response->successful()) {
 
@@ -231,6 +238,11 @@ class ExnodeService
     }
 
 
+    /**
+     * Получение активных токенов exnode
+     * @return DataArrayDto
+     * @throws ConnectionException
+     */
     public function getAvailableTokens(): DataArrayDto
     {
         $timestamp = time();
