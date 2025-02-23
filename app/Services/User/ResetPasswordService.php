@@ -58,6 +58,11 @@ class ResetPasswordService
         $reset = LimitResetPassword::where('code', $code)->first();
         if($reset){
             $user = User::where('email', $reset->user_email)->first();
+
+            if(!$user){
+                return new DataEmptyDto(status: false, error: 'Пользователь не найден', code: 404);
+            }
+
             $user->password = $password;
             $user->save();
 
