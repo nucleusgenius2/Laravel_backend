@@ -47,7 +47,7 @@ class ChatService
             return new DataObjectDto(status: true, data: $message);
         }
         else{
-            return new DataObjectDto(status: false);
+            return new DataObjectDto(status: false, error: 'Сообщение не сохранено', code: 400);
         }
 
 

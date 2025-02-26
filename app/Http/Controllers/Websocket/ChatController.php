@@ -46,6 +46,10 @@ class ChatController extends Controller
             $this->code = 200;
             $this->dataJson = $dtaObjectDto->data;
         }
+        else{
+            $this->code = $dtaObjectDto->code;
+            $this->dataJson = $dtaObjectDto->error;
+        }
 
         return $this->responseJsonApi();
     }
