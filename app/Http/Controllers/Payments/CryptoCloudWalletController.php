@@ -48,10 +48,18 @@ class CryptoCloudWalletController extends Controller
 
     public function callback(Request $request)
     {
-        $this->service->collback(requestData: $request->all());
+        $dataEmptyDto = $this->service->collback(requestData: $request->all());
 
-        //$this->code = 200;
-        //return response()->json();
+        if ($dataEmptyDto->status){
+            $this->status = 'success';
+            $this->code = 200;
+        }
+        else{
+            $this->code = $dataEmptyDto->code;
+            $this->message = $dataEmptyDto->error;
+        }
+
+        return $this->responseJsonApi();
     }
 
 }

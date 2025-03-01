@@ -31,7 +31,7 @@ class CheckAuthUserController extends Controller
         }
         else {
             $this->message = $dataArrayDto->error;
-            $this->code = 400;
+            $this->code = $dataArrayDto->code;
         }
 
         return $this->responseJsonApi();

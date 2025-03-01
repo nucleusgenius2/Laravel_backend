@@ -59,7 +59,7 @@ class BalanceController extends Controller
             $this->code = 200;
         }
         else{
-            $this->code = 400;
+            $this->code = $dataEmptyDto->code;
             $this->message = $dataEmptyDto->error;
         }
 
@@ -67,7 +67,7 @@ class BalanceController extends Controller
     }
 
     /**
-     * Выбор главного баланса юзера
+     * Выбор главного баланса юзера (при выборе конвертирует бонусный счет в выбранную валюту)
      * @param BalanceRequest $request
      * @return JsonResponse
      */
@@ -82,7 +82,7 @@ class BalanceController extends Controller
             $this->code = 200;
         }
         else{
-            $this->code = 500;
+            $this->code = $dataEmptyDto->code;
             $this->message = $dataEmptyDto->error;
         }
 

@@ -22,6 +22,11 @@ class NotificationController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * Пагинированный вывод списка уведомлений юзера
+     * @param PageRequest $request
+     * @return JsonResponse
+     */
     public function index(PageRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -37,6 +42,11 @@ class NotificationController extends Controller
         return $this->responseJsonApi();
     }
 
+    /**
+     * Показ конкретного уведомления
+     * @param int $id
+     * @return JsonResponse
+     */
     public function show(int $id): JsonResponse
     {
         if($id > 0) {
@@ -50,7 +60,7 @@ class NotificationController extends Controller
                 $this->dataJson = $dataObjectDto->data;
             }
             else{
-                $this->code = 404;
+                $this->code = $dataObjectDto->code;
                 $this->message = $dataObjectDto->error;
             }
         }
@@ -62,6 +72,11 @@ class NotificationController extends Controller
         return $this->responseJsonApi();
     }
 
+    /**
+     * Создание уведомления для юзера
+     * @param NotificationRequest $request
+     * @return JsonResponse
+     */
     public function store(NotificationRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -76,7 +91,7 @@ class NotificationController extends Controller
             $this->dataJson = $dataObjectDto->data;
         }
         else{
-            $this->code = 500;
+            $this->code = $dataObjectDto->code;
             $this->message = $dataObjectDto->error;
         }
 

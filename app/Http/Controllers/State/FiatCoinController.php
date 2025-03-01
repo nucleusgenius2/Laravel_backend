@@ -47,7 +47,7 @@ class FiatCoinController extends Controller
             $this->code = 200;
             $this->dataJson = $dataObjectDto->data;
         } else {
-            $this->code = $dataObjectDto->code ?? 400;
+            $this->code = $dataObjectDto->code;
             $this->message = $dataObjectDto->error;
         }
 

@@ -30,7 +30,7 @@ class CountryService
             return new DataArrayDto(status: true, data: $data);
         }
         catch (\Exception $e){
-            return new DataArrayDto(status: false, error: 'Код вашей старны не найден');
+            return new DataArrayDto(status: false, error: 'Код вашей старны не найден', code: 400);
         }
 
     }

@@ -29,7 +29,7 @@ class VerificationEmailService
                     return new DataEmptyDto(status: true);
                 }
                 else{
-                    return new DataEmptyDto(status: false, error: 'Лимит смены почт достигнут');
+                    return new DataEmptyDto(status: false, error: 'Лимит смены почт достигнут', code: 400);
                 }
             }
             else {

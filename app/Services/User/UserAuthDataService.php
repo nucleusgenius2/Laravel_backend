@@ -43,7 +43,7 @@ class UserAuthDataService
 
             return new DataArrayDto(status: true, data: $data);
         } catch (\Exception $e) {
-            return new DataArrayDto(status: false, error: $e);
+            return new DataArrayDto(status: false, error: $e, code: 400);
         }
 
     }

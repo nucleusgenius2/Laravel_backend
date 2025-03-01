@@ -77,48 +77,5 @@ class PlayGameController extends Controller
         return $this->responseJsonApi();
     }
 
-    //тестовый метод для отладки, потом убрать
-    public function createTest(UserService $service): JsonResponse
-    {
-        DB::beginTransaction();
-        try {
-            $data = [
-                'phone' => '788899922',
-                'email' => 'testgame@mail.ru',
-                'password' => '123456',
-                'currency' => 'RUB',
-            ];
-
-            $userData = $service->createUser($data, 'RU');
-
-            $game = Game::create([
-                'gameId' => GenerateUniqueString::generateName(10),
-                'type' => 'minigame',
-                'img' => '',
-                'title' => 'Рога и копыта',
-            ]);
-
-            PlayGame::create([
-                'gameId' => $game->gameId,
-                'date_play' => Carbon::now(),
-                'bet' => 2,
-                'win' => 1,
-                'ratio' => 1,
-                'user_id' => $userData['fullUserData']['user']->id,
-            ]);
-            DB::commit();
-            $this->status = 'success';
-            $this->code = 200;
-        }
-        catch (\Exception $e) {
-            DB::rollBack();
-            $this->message = $e;
-
-        }
-
-
-        return $this->responseJsonApi();
-    }
-
 
 }

@@ -40,7 +40,7 @@ class CountryController extends Controller
             $this->dataJson = $dataArrayDto->data;
         }
         else{
-            $this->code = 400;
+            $this->code = $dataArrayDto->code;
             $this->dataJson = $dataArrayDto->error;
         }
 

@@ -331,7 +331,7 @@ class UserService
 
 
         if(empty($data)){
-            return new DataEmptyDto(status: false, error: 'Пустые данные');
+            return new DataEmptyDto(status: false, error: 'Пустые данные', code: 400);
         }
         else{
             $userParams = $user->params()->first();
@@ -356,7 +356,7 @@ class UserService
                     $userParams->save();
                 }
                 else{
-                    return new DataEmptyDto(status: false, error: 'Аватар не был загружен', code: 400);
+                    return new DataEmptyDto(status: false, error: $dataStringDto->error, code: 400);
                 }
             }
 

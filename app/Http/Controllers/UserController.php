@@ -26,7 +26,7 @@ class UserController extends Controller
             $this->status = 'success';
             $this->code = 200;
         } else {
-            $this->code = $dataEmptyDto->code ?? 400;
+            $this->code = $dataEmptyDto->code;
             $this->message = $dataEmptyDto->error;
         }
 

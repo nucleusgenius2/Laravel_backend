@@ -26,7 +26,7 @@ class NotificationService
             return new DataObjectDto(status: true, data: $notifications );
         }
         else{
-            return new DataObjectDto(status: false, error: 'Уведомление не найдено' );
+            return new DataObjectDto(status: false, error: 'Уведомление не найдено', code: 404 );
         }
 
     }
@@ -44,7 +44,7 @@ class NotificationService
             return new DataObjectDto(status: true, data: $notifications );
         }
         else{
-            return new DataObjectDto(status: false, error: 'Уведомление не создано' );
+            return new DataObjectDto(status: false, error: 'Уведомление не создано', code: 500);
         }
 
     }

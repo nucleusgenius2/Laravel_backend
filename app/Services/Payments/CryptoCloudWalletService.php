@@ -95,7 +95,7 @@ class CryptoCloudWalletService
 
     }
 
-    public function collback(array $requestData): void
+    public function collback(array $requestData): DataEmptyDto
     {
         $validated = Validator::make($requestData, [
             'status' => 'required|string|in:success,error',
@@ -110,6 +110,7 @@ class CryptoCloudWalletService
         if ($validated->fails()) {
             log::channel('cryptocloud')->error('Не валидный запрос на колбек крипто клауд');
             log::channel('cryptocloud')->error(json_encode($requestData));
+            return new DataEmptyDto(status: false, error: 'Ошибка валидации колбека', code: 422);
         } else {
             if($requestData['status'] === 'success'){
                 DB::beginTransaction();
@@ -154,12 +155,18 @@ class CryptoCloudWalletService
                     }
 
                     DB::commit();
+
+                    return new DataEmptyDto(status: true);
                 }
                 catch (\Exception $e) {
                     DB::rollBack();
 
                     log::channel('cryptocloud')->error('Пришел колбек, завершился ошибкой: '.$e->getMessage());
+                    return new DataEmptyDto(status: false, error: 'Ошибка обновления платежа', code: 500);
                 }
+            }
+            else {
+                return new DataEmptyDto(status: false, error: 'Ошибка обновления платежа', code: 500);
             }
 
         }

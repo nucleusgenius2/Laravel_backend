@@ -23,11 +23,9 @@ class AdvertController extends Controller
 
         $dataObjectDto = $this->service->getAdverts(count: $data['count']);
 
-        if( $dataObjectDto->status) {
-            $this->status = 'success';
-            $this->code = 200;
-            $this->dataJson = $dataObjectDto->data;
-        }
+        $this->status = 'success';
+        $this->code = 200;
+        $this->dataJson = $dataObjectDto->data;
 
         return $this->responseJsonApi();
     }

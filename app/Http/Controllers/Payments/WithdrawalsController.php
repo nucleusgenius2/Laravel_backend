@@ -28,14 +28,9 @@ class WithdrawalsController extends Controller
 
         $dataEmptyDto = $this->service->getPayments(user: $request->user(), data: $data);
 
-        if( $dataEmptyDto->status){
-            $this->status = 'success';
-            $this->dataJson = $dataEmptyDto->data;
-            $this->code = 200;
-        }
-        else {
-            $this->code = 400;
-        }
+        $this->status = 'success';
+        $this->dataJson = $dataEmptyDto->data;
+        $this->code = 200;
 
         return $this->responseJsonApi();
     }

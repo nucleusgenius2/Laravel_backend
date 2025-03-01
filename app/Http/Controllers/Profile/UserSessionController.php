@@ -23,13 +23,9 @@ class UserSessionController extends Controller
 
         $dataObjectDto = $this->service->getHistory(user: $request->user(), page: $data['page'], perPage: $this->perPageFrontend );
 
-        if ($dataObjectDto->status) {
-            $this->status = 'success';
-            $this->code = 200;
-            $this->dataJson = $dataObjectDto->data;
-        } else {
-            $this->code = 400;
-        }
+        $this->status = 'success';
+        $this->code = 200;
+        $this->dataJson = $dataObjectDto->data;
 
         return $this->responseJsonApi();
     }

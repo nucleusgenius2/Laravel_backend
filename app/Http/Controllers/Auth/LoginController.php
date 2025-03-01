@@ -34,7 +34,7 @@ class LoginController extends Controller
             $this->message = 'Вход успешен';
         }
         else{
-            $this->code = $dataArrayDto->code ?? 400;
+            $this->code = $dataArrayDto->code;
             $this->message = $dataArrayDto->data;
         }
 

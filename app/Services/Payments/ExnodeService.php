@@ -165,6 +165,7 @@ class ExnodeService
         if (!$response->successful()) {
             log::channel('exnode')->error('Ошибка запроса Exnode'  .$trackerId);
             Log::channel('exnode')->error($response->body());
+            return new DataEmptyDto(status: false, error: 'Колбек вернул ошибку', code: 500);
         }
         else {
             $responseData = $response->json();

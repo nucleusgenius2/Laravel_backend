@@ -43,13 +43,12 @@ class ChatService
             'user' => $user->id,
             'created_at' => Carbon::now(),
         ]);
+
         if($message) {
             return new DataObjectDto(status: true, data: $message);
         }
         else{
             return new DataObjectDto(status: false, error: 'Сообщение не сохранено', code: 400);
         }
-
-
     }
 }

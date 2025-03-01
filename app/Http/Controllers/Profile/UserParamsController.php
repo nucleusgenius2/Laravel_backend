@@ -22,14 +22,9 @@ class UserParamsController extends Controller
     {
         $dataArrayDto = $this->service->getParams($request->user());
 
-        if( $dataArrayDto->status){
-            $this->status = 'success';
-            $this->code = 200;
-            $this->dataJson = $dataArrayDto->data;
-        }
-        else {
-            $this->code = 400;
-        }
+        $this->status = 'success';
+        $this->code = 200;
+        $this->dataJson = $dataArrayDto->data;
 
         return $this->responseJsonApi();
 
